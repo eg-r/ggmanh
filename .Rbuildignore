@@ -1,0 +1,5 @@
+^ggmanh\.Rproj$
+^\.Rproj\.user$
+^\.git$
+[.]gitignore$
+[.]DS_Store$

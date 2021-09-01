@@ -1,0 +1,33 @@
+Package: ggmanh
+Title: Visualization Tool for GWAS Result
+Version: 0.99.0
+Authors@R: c(
+        person(given = "John", family = "Lee", role = c("aut", "cre"), email = "john.lee@abbvie.com"),
+        person(given = "Xiuwen", family = "Zheng", role = c("ctb", "dtc"), email = "xiuwen.zheng@abbvie.com")
+    )
+Description: Manhattan plot and QQ Plot are commonly used to visualize the end result of Genome Wide Association Study.
+    The "GWASplots" package aims to make the generation of these plots easy while maintaining customizability.
+biocViews: Visualization, GenomeWideAssociation, Genetics
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
+Imports: 
+    dplyr (>= 1.0.0),
+    gdsfmt,
+    ggplot2,
+    ggrepel,
+    grDevices,
+    magrittr,
+    RColorBrewer,
+    rlang,
+    scales,
+    SeqArray (>= 1.32.0),
+    stats
+Suggests: 
+    rmarkdown,
+    knitr,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+VignetteBuilder: knitr
