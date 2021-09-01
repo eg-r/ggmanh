@@ -4,3 +4,4 @@
 [.]gitignore$
 [.]DS_Store$
 ^LICENSE\.md$
+.Rhistory

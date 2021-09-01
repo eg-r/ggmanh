@@ -84,15 +84,15 @@ manhattan_data_preprocess <- function(
 
   # run checks on several arguments
   preprocess_arg_check_out <- preprocess_arg_check(
-    x =x, signif = signif, signif.col = signif.col, 
-    pval.colname = pval.colname, chr.colname = chr.colname, 
+    x =x, signif = signif, signif.col = signif.col,
+    pval.colname = pval.colname, chr.colname = chr.colname,
     pos.colname = pos.colname, scale.chr.width = scale.chr.width)
-  
+
   # remove any results with missing chr, pos, or pval
   x <- remove_na(x, chr.colname, pos.colname, pval.colname)
   x <- remove_0_pval(x, pval.colname)
   signif.col <- preprocess_arg_check_out$signif.col
-  
+
   # factorize chromosome column to set order of chromosomes for the plot
   if (!is.null(chr.order)) {
     x[[chr.colname]] <- factor(x[[chr.colname]], levels = chr.order)
@@ -109,10 +109,10 @@ manhattan_data_preprocess <- function(
   if (!is.null(highlight.colname)) {
     highlight.col <- set_highlight_col(x, highlight.colname, highlight.col)
   }
-  
+
   # map each position in the chromosome to new positions
   x <- x[order(x[[chr.colname]], x[[pos.colname]]), ]
-  
+
   if (scale.chr.width) {
     # scale the width of chromosome proportional to number of points in chromosome
     # keep original positioning
@@ -135,7 +135,7 @@ manhattan_data_preprocess <- function(
         tapply(x[[pos.colname]], x[[chr.colname]], FUN = function(y) sequence_along_chr_unscaled(y), simplify = FALSE),
         use.names = FALSE) * unname(chr_width[as.character(x[[chr.colname]])])
   }
-  
+
   # fix certain widths for each chromosome, and gap for in between chromosomes
   lg <- 0.15 / 26 * nchr # gap between chromosome (should be robust with different lengths of chromosme)
   start_pos <- c(0, cumsum(chr_width)[-nchr]) + ((1:nchr - 1) * lg)
@@ -143,10 +143,10 @@ manhattan_data_preprocess <- function(
   end_pos <- start_pos + chr_width # ending x-coordinate for each chr
   center_pos <- (start_pos + end_pos) / 2 # middle x-coordinate for each chr... used for x axis labelling
   x$new_pos <- new_pos + start_pos[as.character(x[[chr.colname]])]
-  
+
   # -log10(pvalue)
   x$log10pval <- -log10(x[[pval.colname]])
-  
+
   # thin data points if it set to true
   if (thin) {
     x <- thinPoints(dat = x, value = "log10pval", n = thin.n, nbins = 200, groupBy = chr.colname)
@@ -186,7 +186,7 @@ manhattan_data_preprocess <- function(
 #' This generic function accepts a result of a GWAS in the form of \code{data.frame}
 #' or a \code{MPdata} object produced by \code{manhattan_data_preprocess}. The
 #' function will throw an error if another type of object is passed.
-#' 
+#'
 #' Having \code{rescale = TRUE} is useful when there are points with very
 #' high -log10(p.value). In this case, the function attempts to split
 #' the plot into two different scales, with the split happening near the strictest
@@ -202,7 +202,7 @@ manhattan_data_preprocess <- function(
 #' choice to set them as \code{NA} or \code{""}.
 #'
 #' @return \code{gg} object if \code{is.null(outfn)}, \code{NULL} if \code{!is.null(outf)}
-#' 
+#'
 #' @examples
 #' library(dplyr)
 #'
@@ -216,14 +216,14 @@ manhattan_data_preprocess <- function(
 #'   gwasdat, pval.colname = "pvalue", chr.colname = "chromosome", pos.colname = "position",
 #'   chr.order = as.character(1:5)
 #' )
-#' 
+#'
 #' mpdata <- manhattan_data_preprocess(
 #'   gwasdat, pval.colname = "pvalue", chr.colname = "chromosome", pos.colname = "position",
 #'   chr.order = as.character(1:5)
 #' )
 #'
 #' manhattan_plot(mpdata)
-#' 
+#'
 #' @rdname manhattan_plot
 #' @export
 manhattan_plot <- function(
@@ -335,15 +335,15 @@ manhattan_plot.MPdata <- function(
     point.color <- x$chr.colname
     point.color.map <- x$chr.col
   }
-  
+
   # manhattan plot without labels
   p <- ggplot2::ggplot(x$data, ggplot2::aes_string(x = x$pos.colname, y = x$pval.colname, color = point.color)) +
     ggplot2::geom_point(size = point.size, pch = 16) +
     ggplot2::scale_discrete_manual(aesthetics = "color", values = point.color.map) +
     ggplot2::scale_y_continuous(
-      trans = trans$trans, 
+      trans = trans$trans,
       breaks = trans$breaks,
-      expand = c(0.02, 0.01), 
+      expand = c(0.02, 0.01),
       limits = ylimit
     ) +
     ggplot2::scale_x_continuous(
@@ -406,7 +406,7 @@ manhattan_plot.MPdata <- function(
 #'   \code{tibble}), or an \code{MPdata} object.
 #' @param chromosome a character. a specific chromosome in \code{x} to be plotted
 #' @param ... Additional arguments for chromosome manhattan plot
-#' 
+#'
 #' @rdname manhattan_chromosome
 #' @export
 #'
@@ -494,7 +494,7 @@ manhattan_chromosome.data.frame <- function(
 #'   gwasdat, pval.colname = "pvalue", chr.colname = "chromosome", pos.colname = "position",
 #'   chr.order = as.character(1:5)
 #' )
-#' 
+#'
 #' manhattan_chromosome(mpdata, chromosome = "3")
 #'
 #' @inheritParams manhattan_chromosome.data.frame
@@ -538,7 +538,7 @@ manhattan_chromosome.MPdata <- function(
   x.break.label <- ggplot2::waiver()
 
   point.color <- if (!is.null(x$highlight.colname)) x$highlight else x$chr.colname
- 
+
   # choose whether to use highlight.colname or chr.colname
   if (!is.null(x$highlight.colname) && !is.null(x$highlight.col) && color.by.highlight) {
     point.color <- x$highlight.colname
@@ -546,8 +546,8 @@ manhattan_chromosome.MPdata <- function(
   } else {
     point.color <- x$chr.colname
     point.color.map <- x$chr.col
-  }  
-  
+  }
+
   p <- ggplot2::ggplot(x$data, ggplot2::aes_string(
     x = pos,
     y = x$pval.colname,
