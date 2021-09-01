@@ -8,6 +8,8 @@
 #' @param plot.width a numeric. Plot width in inches.
 #' @param plot.height a numeric. Plot height in inches.
 #'
+#' @return a ggplot object
+#'
 #' @export
 #' @examples
 #' x <- rbeta(1000, 1, 1)

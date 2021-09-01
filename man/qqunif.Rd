@@ -19,6 +19,9 @@ the graphics window.}
 
 \item{plot.height}{a numeric. Plot height in inches.}
 }
+\value{
+a ggplot object
+}
 \description{
 Plot Quantile-Quantile Plot of p-values against uniform distribution.
 }

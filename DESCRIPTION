@@ -6,7 +6,8 @@ Authors@R: c(
         person(given = "Xiuwen", family = "Zheng", role = c("ctb", "dtc"), email = "xiuwen.zheng@abbvie.com")
     )
 Description: Manhattan plot and QQ Plot are commonly used to visualize the end result of Genome Wide Association Study.
-    The "GWASplots" package aims to make the generation of these plots easy while maintaining customizability.
+    The "GWASplots" package aims to keep the generation of these plots simple while maintaining customizability.
+    Main functions include manhattan_plot, qqunif, and thinPoints.
 biocViews: Visualization, GenomeWideAssociation, Genetics
 License: MIT + file LICENSE
 Encoding: UTF-8
