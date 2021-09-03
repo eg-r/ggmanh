@@ -6,7 +6,7 @@
 \usage{
 manhattan_data_preprocess(
   x,
-  signif = c(5e-08, 5e-07),
+  signif = c(5e-08, 1e-05),
   pval.colname = "pval",
   chr.colname = "chr",
   pos.colname = "pos",
@@ -25,7 +25,7 @@ manhattan_data_preprocess(
 At bare minimum, it should contain chromosome, position, and p-value.}
 
 \item{signif}{a numeric vector. Significant p-value thresholds to be drawn for
-manhattan plot. At least one value should be provided. Default value is c(5e-08, 5e-07)}
+manhattan plot. At least one value should be provided. Default value is c(5e-08, 1e-5)}
 
 \item{pval.colname}{a character. Column name of \code{x} containing p.value.}
 
@@ -36,20 +36,22 @@ manhattan plot. At least one value should be provided. Default value is c(5e-08,
 \item{highlight.colname}{a character. If you desire to color certain points
 (e.g. significant variants) rather than color by chromosome, you can specify the
 category in this column, and provide the color mapping in \code{highlight.col}.
-Specification of \code{highlight.colname} overrides \code{chr.col}.}
+Ignored if \code{NULL}.}
 
 \item{chr.order}{a character vector. Order of chromosomes presented in manhattan plot.}
 
 \item{signif.col}{a character vector of equal length as \code{signif}. It contains
-colors for the lines drawn at \code{signif}.}
+colors for the lines drawn at \code{signif}. If \code{NULL}, the smallest value is colored
+black while others are grey.}
 
 \item{chr.col}{a character vector of equal length as chr.order. It contains colors
-for the chromosomes. Name of the vector should match \code{chr.order}.}
+for the chromosomes. Name of the vector should match \code{chr.order}. If \code{NULL}, default
+colors are applied using \code{RColorBrewer}.}
 
 \item{highlight.col}{a character vector. It contains color mapping for the values from
 \code{highlight.colname}.}
 
-\item{scale.chr.width}{a logical. Should the width of each chromosome reflect the
+\item{scale.chr.width}{a logical. Determines if the width of each chromosome reflect the
 number of variants and the position on chromosome?}
 
 \item{thin}{a logical. Reduce number of data points when they are cluttered?}

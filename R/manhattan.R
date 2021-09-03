@@ -10,22 +10,24 @@
 #' @param x a data frame or any other extension of data frame (e.g. a tibble).
 #'   At bare minimum, it should contain chromosome, position, and p-value.
 #' @param signif a numeric vector. Significant p-value thresholds to be drawn for
-#'   manhattan plot. At least one value should be provided. Default value is c(5e-08, 5e-07)
+#'   manhattan plot. At least one value should be provided. Default value is c(5e-08, 1e-5)
 #' @param pval.colname a character. Column name of \code{x} containing p.value.
 #' @param chr.colname a character. Column name of \code{x} containing chromosome number.
 #' @param pos.colname a character. Column name of \code{x} containing position.
 #' @param chr.order a character vector. Order of chromosomes presented in manhattan plot.
 #' @param signif.col a character vector of equal length as \code{signif}. It contains
-#'   colors for the lines drawn at \code{signif}.
+#'   colors for the lines drawn at \code{signif}. If \code{NULL}, the smallest value is colored
+#'   black while others are grey.
 #' @param chr.col a character vector of equal length as chr.order. It contains colors
-#'   for the chromosomes. Name of the vector should match \code{chr.order}.
+#'   for the chromosomes. Name of the vector should match \code{chr.order}. If \code{NULL}, default
+#'   colors are applied using \code{RColorBrewer}.
 #' @param highlight.colname a character. If you desire to color certain points
 #'   (e.g. significant variants) rather than color by chromosome, you can specify the
 #'   category in this column, and provide the color mapping in \code{highlight.col}.
-#'   Specification of \code{highlight.colname} overrides \code{chr.col}.
+#'   Ignored if \code{NULL}.
 #' @param highlight.col a character vector. It contains color mapping for the values from
 #'   \code{highlight.colname}.
-#' @param scale.chr.width a logical. Should the width of each chromosome reflect the
+#' @param scale.chr.width a logical. Determines if the width of each chromosome reflect the
 #'   number of variants and the position on chromosome?
 #' @param thin a logical. Reduce number of data points when they are cluttered?
 #' @param thin.n an integer. Number of max points per horizontal partitions of the plot. Recommend 1000 for genome-wide manhattan plot and 5000 for chromosomal plot.
@@ -70,7 +72,7 @@
 #'
 #' @export
 manhattan_data_preprocess <- function(
-  x, signif = c(5e-8, 5e-7), pval.colname = "pval",
+  x, signif = c(5e-8, 1e-5), pval.colname = "pval",
   chr.colname = "chr", pos.colname = "pos", highlight.colname = NULL, chr.order = NULL,
   signif.col = NULL, chr.col = NULL, highlight.col = NULL, scale.chr.width = FALSE, thin = TRUE,
   thin.n = 500
@@ -246,7 +248,7 @@ manhattan_plot.default <- function(x, ...) {
 #'
 #' @export
 manhattan_plot.data.frame <- function(
-  x, outfn = NULL, signif = c(5e-8, 5e-7), pval.colname = "pval", chr.colname = "chr",
+  x, outfn = NULL, signif = c(5e-8, 1e-5), pval.colname = "pval", chr.colname = "chr",
   pos.colname = "pos", label.colname = NULL, highlight.colname = NULL, chr.order = NULL,
   signif.col = NULL, chr.col = NULL,  highlight.col = NULL,
   rescale = TRUE, rescale.ratio.threshold = 5, signif.rel.pos = 0.4, color.by.highlight = FALSE,
@@ -438,7 +440,7 @@ manhattan_chromosome <- function(x, chromosome, ...) {
 #'
 #' @inheritParams manhattan_plot.data.frame
 manhattan_chromosome.data.frame <- function(
-  x, chromosome, outfn = NULL, signif = c(5e-8, 5e-7),
+  x, chromosome, outfn = NULL, signif = c(5e-8, 1e-5),
   pval.colname = "pval", chr.colname = "chr", pos.colname = "pos",
   chr.order = NULL, signif.col = NULL, chr.col = NULL, highlight.colname = NULL,
   scale.chr.width = FALSE, thin = FALSE, thin.n = 3000,

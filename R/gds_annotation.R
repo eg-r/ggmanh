@@ -84,15 +84,15 @@ gds_retrieve_annot_rsid <- function(
 #'
 #' Retrieve variant annotation stored in a GDS file with chromosome location or rs.id.
 #'
-#' @param x A \code{data.frame} object to be annotated.
-#' @param gdsfile A GDS file. If \code{NULL}, the default GDS file that comes with the package is used.
-#' @param annot.method A method for searching variants. "position" requires \code{chr}, \code{pos}, \code{ref}, and \code{alt}. "rs.id" requires \code{rs.id}.
-#' @param chr,pos,ref,alt,rs.id Column names of \code{x} that contain chromosome, position, reference allele, alternate allele, and rs.id, respectively.
-#' @param concat_char A character used to separate multiple annotations returned from the gds file.
-#' @param annotation_names A character vector of nodes of the \code{gdsfile} that are to be extracted.
-#' @param verbose Output messages.
+#' @param x a \code{data.frame} object to be annotated.
+#' @param gdsfile a character for GDS filename. If \code{NULL}, the default GDS file included with the package is used.
+#' @param annot.method a method for searching variants. "position" requires \code{chr}, \code{pos}, \code{ref}, and \code{alt}. "rs.id" requires \code{rs.id}.
+#' @param chr,pos,ref,alt,rs.id column names of \code{x} that contain chromosome, position, reference allele, alternate allele, and rs.id, respectively.
+#' @param concat_char a character used to separate multiple annotations returned from the gds file.
+#' @param annotation_names a character vector of nodes of the \code{gdsfile} that are to be extracted.
+#' @param verbose output messages.
 #'
-#' @return A character vector the length of \code{nrow(x)} if \code{concat_char} is a character.
+#' @return a character vector the length of \code{nrow(x)} if \code{concat_char} is a character.
 #'
 #' @examples
 #' vardata <- data.frame(

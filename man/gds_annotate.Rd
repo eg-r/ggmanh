@@ -20,22 +20,22 @@ gds_annotate(
 )
 }
 \arguments{
-\item{x}{A \code{data.frame} object to be annotated.}
+\item{x}{a \code{data.frame} object to be annotated.}
 
-\item{gdsfile}{A GDS file. If \code{NULL}, the default GDS file that comes with the package is used.}
+\item{gdsfile}{a character for GDS filename. If \code{NULL}, the default GDS file included with the package is used.}
 
-\item{annot.method}{A method for searching variants. "position" requires \code{chr}, \code{pos}, \code{ref}, and \code{alt}. "rs.id" requires \code{rs.id}.}
+\item{annot.method}{a method for searching variants. "position" requires \code{chr}, \code{pos}, \code{ref}, and \code{alt}. "rs.id" requires \code{rs.id}.}
 
-\item{chr, pos, ref, alt, rs.id}{Column names of \code{x} that contain chromosome, position, reference allele, alternate allele, and rs.id, respectively.}
+\item{chr, pos, ref, alt, rs.id}{column names of \code{x} that contain chromosome, position, reference allele, alternate allele, and rs.id, respectively.}
 
-\item{concat_char}{A character used to separate multiple annotations returned from the gds file.}
+\item{concat_char}{a character used to separate multiple annotations returned from the gds file.}
 
-\item{verbose}{Output messages.}
+\item{verbose}{output messages.}
 
-\item{annotation_names}{A character vector of nodes of the \code{gdsfile} that are to be extracted.}
+\item{annotation_names}{a character vector of nodes of the \code{gdsfile} that are to be extracted.}
 }
 \value{
-A character vector the length of \code{nrow(x)} if \code{concat_char} is a character.
+a character vector the length of \code{nrow(x)} if \code{concat_char} is a character.
 }
 \description{
 Retrieve variant annotation stored in a GDS file with chromosome location or rs.id.

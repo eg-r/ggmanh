@@ -5,10 +5,10 @@ preprocess_arg_check <- function(
   preprocess_checklist <- list(signif.col = NULL)
   # check significance cutoff exists
   if (length(signif) < 1) stop("At least one significance threshold should be provided.")
-  
+
   # check that significance cutoff is numeric
   if (!is.numeric(signif)) stop("signif should be a numeric vector.")
-  
+
   # check signif.col
   if (is.null(signif.col)) {
     preprocess_checklist$signif.col <- rep("grey", length(signif))
@@ -18,7 +18,7 @@ preprocess_arg_check <- function(
     preprocess_checklist$signif.col <- rep("grey", length(signif))
     preprocess_checklist$signif.col[which.max(-log10(signif))] <- "black"
   }
-  
+
   # check that the supplied column names exist
   if (!all(c(is.character(pval.colname), is.character(chr.colname), is.character(pos.colname)))) {
     stop("Column names should be characters")
@@ -29,21 +29,21 @@ preprocess_arg_check <- function(
   if (pval.colname == "log10pval") {
     stop("Choose a different name for pvalue column name.")
   }
-  
+
   if (any(x[[pval.colname]] < 0, na.rm = TRUE) | any(x[[pval.colname]] > 1, na.rm = TRUE)) stop("p.value is a probability between 0 and 1.")
 
-  
+
   # check that column names are valid
   if (!is.numeric(x[[pval.colname]])) stop(pval.colname, " should be a numeric column.")
   if (!is.numeric(x[[pos.colname]])) stop(pos.colname, " should be a numeric column.")
-  
+
   # check that values in p value column are correct
   if (any(x[[pval.colname]] < 0, na.rm = TRUE) | any(x[[pval.colname]] > 1, na.rm = TRUE)) stop("p.value is a probability between 0 and 1.")
-  
+
   if (length(scale.chr.width) != 1 | !is.logical(scale.chr.width)) {
     stop("scale.chr.width should be TRUE or FALSE.")
   }
-  
+
   return(preprocess_checklist)
 }
 
@@ -123,7 +123,7 @@ set_highlight_col <- function(x, highlight.colname, highlight.col) {
       }
     }
   }
-  
+
   return(highlight.col)
 }
 
@@ -141,7 +141,8 @@ valid_colors <- function(clr) {
 sequence_along_chr_scaled <- function(pos) {
   pos <- pos - min(pos)
   if (max(pos) != 0) {
-    return(pos / max(pos))
+    pos <- pos / max(pos)
+    return(pos)
   } else {
     return(pos)
   }
