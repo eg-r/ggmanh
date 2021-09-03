@@ -40,7 +40,7 @@ test_that("Check that preprocess works as intended", {
     chr.order = c('a','b','c'), scale.chr.width = TRUE, thin = FALSE
   )
   lg <- 0.15 / 26 * 3 # gap between chromosomes - hard coded in manhattan_preprocess function
-  expect_equal(mpdat1$data$new_pos, c(1/4, 2/4, 3/4, 1 + lg + 1/3, 1 + lg + 2/3, 2 + lg*2 + 1/2))
+  expect_equal(mpdat1$data$new_pos, c(0, 1/2, 1, 1 + lg, 2 + lg, 2 + lg*2 + 1/2))
   expect_equal(mpdat2$data$new_pos, c(0, 2/3 * 1.5, 1.5, 1.5 + lg, 2.5 + lg, 2.5 + lg*2))
   expect_equal(mpdat1$data$pval, mpdat2$data$pval)
   expect_equal(mpdat1$data$pval, c(0.05,0.05,0.0005,0.000005,0.005,0.0005))

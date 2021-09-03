@@ -137,20 +137,25 @@ valid_colors <- function(clr) {
   vapply(clr, valid_colors_, logical(1))
 }
 
-# create spaced points of length(..)
+# create spaced points of length(pos)
 sequence_along_chr_scaled <- function(pos) {
   pos <- pos - min(pos)
   if (max(pos) != 0) {
-    pos <- pos / max(pos)
-    return(pos)
+    return(pos / max(pos))
   } else {
     return(pos)
   }
 }
 
-# create an equally spaced points of length(..)
+# create an equally spaced points of length(pos)
 sequence_along_chr_unscaled <- function(pos) {
-  return(seq(from = 0, to = 1, length.out = length(pos) + 2)[-c(1,length(pos) + 2)])
+  if (length(pos) == 1) {
+    return(1/2)
+  } else if (length(pos) > 1) {
+    return(seq(from = 0, to = 1, length.out = length(pos)))
+  } else {
+    stop("Invalid pos")
+  }
 }
 
 # concatenate elements across the list
