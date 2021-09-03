@@ -6,7 +6,7 @@
 #' @param value column name of \code{dat} to be used for partitioning (see details)
 #' @param n number of points to sample for each partition
 #' @param nbins number of partitions
-#' @param groupBy column name of \code{dat} to group by before partitioning
+#' @param groupBy column name of \code{dat} to group by before partitioning (e.g. chromosome)
 #'
 #' @details The result of Genome Wide Association Study can be very large, with the majority
 #'   of points being being clustered below significance threshold. This unnecessarily increases the time

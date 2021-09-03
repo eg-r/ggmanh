@@ -27,10 +27,12 @@
 #'   Ignored if \code{NULL}.
 #' @param highlight.col a character vector. It contains color mapping for the values from
 #'   \code{highlight.colname}.
-#' @param scale.chr.width a logical. Determines if the width of each chromosome reflect the
-#'   number of variants and the position on chromosome?
+#' @param preserve.position a logical. If \code{TRUE}, the width of each chromosome reflect the
+#'   number of variants and the position of each variant is correctly scaled? If \code{FALSE}, the
+#'   width of each chromosome is equal and the variants are equally spaced.
 #' @param thin a logical. Reduce number of data points when they are cluttered?
-#' @param thin.n an integer. Number of max points per horizontal partitions of the plot. Recommend 1000 for genome-wide manhattan plot and 5000 for chromosomal plot.
+#' @param thin.n an integer. Number of max points per horizontal partitions of the plot.
+#'   Defaults to 500..
 #'
 #' @return a MPdata object. This object contains all the necessary info for constructing
 #'   a manhattan plot.

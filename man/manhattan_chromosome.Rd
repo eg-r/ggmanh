@@ -95,12 +95,10 @@ colors are applied using \code{RColorBrewer}.}
 category in this column, and provide the color mapping in \code{highlight.col}.
 Ignored if \code{NULL}.}
 
-\item{scale.chr.width}{a logical. Determines if the width of each chromosome reflect the
-number of variants and the position on chromosome?}
-
 \item{thin}{a logical. Reduce number of data points when they are cluttered?}
 
-\item{thin.n}{an integer. Number of max points per horizontal partitions of the plot. Recommend 1000 for genome-wide manhattan plot and 5000 for chromosomal plot.}
+\item{thin.n}{an integer. Number of max points per horizontal partitions of the plot.
+Defaults to 500..}
 
 \item{rescale}{a logical. If \code{TRUE}, the plot will rescale itself depending
 on the data. More on this in details.}

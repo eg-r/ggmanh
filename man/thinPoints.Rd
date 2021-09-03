@@ -15,7 +15,7 @@ thinPoints(dat, value, n = 3000, nbins = 200, groupBy = NULL)
 
 \item{nbins}{number of partitions}
 
-\item{groupBy}{column name of \code{dat} to group by before partitioning}
+\item{groupBy}{column name of \code{dat} to group by before partitioning (e.g. chromosome)}
 }
 \value{
 a \code{data.frame}

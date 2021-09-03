@@ -51,12 +51,14 @@ colors are applied using \code{RColorBrewer}.}
 \item{highlight.col}{a character vector. It contains color mapping for the values from
 \code{highlight.colname}.}
 
-\item{scale.chr.width}{a logical. Determines if the width of each chromosome reflect the
-number of variants and the position on chromosome?}
-
 \item{thin}{a logical. Reduce number of data points when they are cluttered?}
 
-\item{thin.n}{an integer. Number of max points per horizontal partitions of the plot. Recommend 1000 for genome-wide manhattan plot and 5000 for chromosomal plot.}
+\item{thin.n}{an integer. Number of max points per horizontal partitions of the plot.
+Defaults to 500..}
+
+\item{preserve.position}{a logical. If \code{TRUE}, the width of each chromosome reflect the
+number of variants and the position of each variant is correctly scaled? If \code{FALSE}, the
+width of each chromosome is equal and the variants are equally spaced.}
 }
 \value{
 a MPdata object. This object contains all the necessary info for constructing
