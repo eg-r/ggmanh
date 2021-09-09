@@ -1,5 +1,3 @@
-context("Data preprocess bad arguments")
-
 library(ggmanh)
 
 test_that("Check that good arguments are provided", {
@@ -33,11 +31,11 @@ test_that("Check that preprocess works as intended", {
   df <- data.frame("pos" = c(1,3,4,5,2,4), "chr" = c('a','a','a','b','b','c'), "pval" = c(0.05,0.05,0.0005,0.005,0.000005,0.0005))
   mpdat1 <- manhattan_data_preprocess(
     x = df, pval.colname = "pval", chr.colname = "chr", pos.colname = "pos",
-    chr.order = c('a','b','c'), scale.chr.width = FALSE, thin = FALSE
+    chr.order = c('a','b','c'), preserve.position = FALSE, thin = FALSE
   )
   mpdat2 <- manhattan_data_preprocess(
     x = df, pval.colname = "pval", chr.colname = "chr", pos.colname = "pos",
-    chr.order = c('a','b','c'), scale.chr.width = TRUE, thin = FALSE
+    chr.order = c('a','b','c'), preserve.position = TRUE, thin = FALSE
   )
   lg <- 0.15 / 26 * 3 # gap between chromosomes - hard coded in manhattan_preprocess function
   expect_equal(mpdat1$data$new_pos, c(0, 1/2, 1, 1 + lg, 2 + lg, 2 + lg*2 + 1/2))

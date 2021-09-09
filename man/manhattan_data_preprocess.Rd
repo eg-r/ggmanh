@@ -15,7 +15,7 @@ manhattan_data_preprocess(
   signif.col = NULL,
   chr.col = NULL,
   highlight.col = NULL,
-  scale.chr.width = FALSE,
+  preserve.position = FALSE,
   thin = TRUE,
   thin.n = 500
 )
@@ -51,14 +51,14 @@ colors are applied using \code{RColorBrewer}.}
 \item{highlight.col}{a character vector. It contains color mapping for the values from
 \code{highlight.colname}.}
 
+\item{preserve.position}{a logical. If \code{TRUE}, the width of each chromosome reflect the
+number of variants and the position of each variant is correctly scaled? If \code{FALSE}, the
+width of each chromosome is equal and the variants are equally spaced.}
+
 \item{thin}{a logical. Reduce number of data points when they are cluttered?}
 
 \item{thin.n}{an integer. Number of max points per horizontal partitions of the plot.
 Defaults to 500..}
-
-\item{preserve.position}{a logical. If \code{TRUE}, the width of each chromosome reflect the
-number of variants and the position of each variant is correctly scaled? If \code{FALSE}, the
-width of each chromosome is equal and the variants are equally spaced.}
 }
 \value{
 a MPdata object. This object contains all the necessary info for constructing
@@ -78,7 +78,7 @@ and organizes the information as \code{MPdata} S3 object.
 
 New positions for each points are calculated, and stored in the data.frame as
 \code{"new_pos"}. By default, all chromosomes will have the same width, with each
-point being equally spaced. This behavior is changed when \code{scale.chr.width = TRUE}.
+point being equally spaced. This behavior is changed when \code{preserve.position = TRUE}.
 The width of each chromosome will scale to the number of points and the points will
 reflect the original positions.
 

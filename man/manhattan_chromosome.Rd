@@ -20,7 +20,7 @@ manhattan_chromosome(x, chromosome, ...)
   signif.col = NULL,
   chr.col = NULL,
   highlight.colname = NULL,
-  scale.chr.width = FALSE,
+  preserve.position = FALSE,
   thin = FALSE,
   thin.n = 3000,
   rescale = TRUE,
@@ -94,6 +94,10 @@ colors are applied using \code{RColorBrewer}.}
 (e.g. significant variants) rather than color by chromosome, you can specify the
 category in this column, and provide the color mapping in \code{highlight.col}.
 Ignored if \code{NULL}.}
+
+\item{preserve.position}{a logical. If \code{TRUE}, the width of each chromosome reflect the
+number of variants and the position of each variant is correctly scaled? If \code{FALSE}, the
+width of each chromosome is equal and the variants are equally spaced.}
 
 \item{thin}{a logical. Reduce number of data points when they are cluttered?}
 

@@ -1,6 +1,6 @@
 # check preprocessing arguments
 preprocess_arg_check <- function(
-  x, signif, signif.col, pval.colname, chr.colname, pos.colname, scale.chr.width
+  x, signif, signif.col, pval.colname, chr.colname, pos.colname, preserve.position
 ) {
   preprocess_checklist <- list(signif.col = NULL)
   # check significance cutoff exists
@@ -40,8 +40,8 @@ preprocess_arg_check <- function(
   # check that values in p value column are correct
   if (any(x[[pval.colname]] < 0, na.rm = TRUE) | any(x[[pval.colname]] > 1, na.rm = TRUE)) stop("p.value is a probability between 0 and 1.")
 
-  if (length(scale.chr.width) != 1 | !is.logical(scale.chr.width)) {
-    stop("scale.chr.width should be TRUE or FALSE.")
+  if (length(preserve.position) != 1 | !is.logical(preserve.position)) {
+    stop("preserve.position should be TRUE or FALSE.")
   }
 
   return(preprocess_checklist)

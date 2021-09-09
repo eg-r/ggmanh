@@ -1,5 +1,3 @@
-context("Check gds functions.")
-
 library(ggmanh)
 
 test_that("Check that the default gds file has been saved.", {

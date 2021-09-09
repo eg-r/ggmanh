@@ -28,7 +28,7 @@ manhattan_plot(x, ...)
   rescale.ratio.threshold = 5,
   signif.rel.pos = 0.4,
   color.by.highlight = FALSE,
-  scale.chr.width = FALSE,
+  preserve.position = FALSE,
   thin = TRUE,
   thin.n = 500,
   plot.title = ggplot2::waiver(),
@@ -112,6 +112,10 @@ on the data. More on this in details.}
 where should the significance threshold be positioned?}
 
 \item{color.by.highlight}{a logical. Should the points be colored based on a highlight column?}
+
+\item{preserve.position}{a logical. If \code{TRUE}, the width of each chromosome reflect the
+number of variants and the position of each variant is correctly scaled? If \code{FALSE}, the
+width of each chromosome is equal and the variants are equally spaced.}
 
 \item{thin}{a logical. Reduce number of data points when they are cluttered?}
 

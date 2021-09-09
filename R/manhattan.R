@@ -57,7 +57,7 @@
 #'
 #' New positions for each points are calculated, and stored in the data.frame as
 #' \code{"new_pos"}. By default, all chromosomes will have the same width, with each
-#' point being equally spaced. This behavior is changed when \code{scale.chr.width = TRUE}.
+#' point being equally spaced. This behavior is changed when \code{preserve.position = TRUE}.
 #' The width of each chromosome will scale to the number of points and the points will
 #' reflect the original positions.
 #'
@@ -76,7 +76,7 @@
 manhattan_data_preprocess <- function(
   x, signif = c(5e-8, 1e-5), pval.colname = "pval",
   chr.colname = "chr", pos.colname = "pos", highlight.colname = NULL, chr.order = NULL,
-  signif.col = NULL, chr.col = NULL, highlight.col = NULL, scale.chr.width = FALSE, thin = TRUE,
+  signif.col = NULL, chr.col = NULL, highlight.col = NULL, preserve.position = FALSE, thin = TRUE,
   thin.n = 500
 ) {
 
@@ -90,7 +90,7 @@ manhattan_data_preprocess <- function(
   preprocess_arg_check_out <- preprocess_arg_check(
     x =x, signif = signif, signif.col = signif.col,
     pval.colname = pval.colname, chr.colname = chr.colname,
-    pos.colname = pos.colname, scale.chr.width = scale.chr.width)
+    pos.colname = pos.colname, preserve.position = preserve.position)
 
   # remove any results with missing chr, pos, or pval
   x <- remove_na(x, chr.colname, pos.colname, pval.colname)
@@ -117,7 +117,7 @@ manhattan_data_preprocess <- function(
   # map each position in the chromosome to new positions
   x <- x[order(x[[chr.colname]], x[[pos.colname]]), ]
 
-  if (scale.chr.width) {
+  if (preserve.position) {
     # scale the width of chromosome proportional to number of points in chromosome
     # keep original positioning
     chr_width <- table(x[[chr.colname]])
@@ -254,7 +254,7 @@ manhattan_plot.data.frame <- function(
   pos.colname = "pos", label.colname = NULL, highlight.colname = NULL, chr.order = NULL,
   signif.col = NULL, chr.col = NULL,  highlight.col = NULL,
   rescale = TRUE, rescale.ratio.threshold = 5, signif.rel.pos = 0.4, color.by.highlight = FALSE,
-  scale.chr.width = FALSE, thin = TRUE, thin.n = 500,
+  preserve.position = FALSE, thin = TRUE, thin.n = 500,
   plot.title = ggplot2::waiver(), plot.subtitle = ggplot2::waiver(), plot.width = 10, plot.height = 5,
   point.size = 0.75, label.font.size = 2, max.overlaps = 20,
   x.label = "Chromosome", y.label = expression(-log[10](p)), ...
@@ -265,7 +265,7 @@ manhattan_plot.data.frame <- function(
     x, signif = signif, pval.colname = pval.colname,
     chr.colname = chr.colname, pos.colname = pos.colname, chr.order = chr.order,
     signif.col = signif.col, chr.col = chr.col, highlight.colname = highlight.colname,
-    highlight.col = highlight.col, scale.chr.width = scale.chr.width, thin = thin
+    highlight.col = highlight.col, preserve.position = preserve.position, thin = thin
   )
 
   # manhattan plot
@@ -445,7 +445,7 @@ manhattan_chromosome.data.frame <- function(
   x, chromosome, outfn = NULL, signif = c(5e-8, 1e-5),
   pval.colname = "pval", chr.colname = "chr", pos.colname = "pos",
   chr.order = NULL, signif.col = NULL, chr.col = NULL, highlight.colname = NULL,
-  scale.chr.width = FALSE, thin = FALSE, thin.n = 3000,
+  preserve.position = FALSE, thin = FALSE, thin.n = 3000,
   rescale = TRUE, rescale.ratio.threshold = 5,
   signif.rel.pos = 0.4, label.colname = NULL,
   point.size = 0.75, x.label = "Chromosome",
@@ -464,7 +464,7 @@ manhattan_chromosome.data.frame <- function(
     x, signif = signif, pval.colname = pval.colname,
     chr.colname = chr.colname, pos.colname = pos.colname, chr.order = chromosome,
     signif.col = signif.col, chr.col = chr.col, highlight.colname = highlight.colname,
-    scale.chr.width = scale.chr.width, thin = thin
+    preserve.position = preserve.position, thin = thin
   )
 
   manhattan_chromosome(
