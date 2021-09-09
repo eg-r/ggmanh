@@ -7,6 +7,9 @@
 #' @param conf.int a numeric between 0 and 1. Confidence band to draw around reference line. Set to \code{NA} to leave it out.
 #' @param plot.width a numeric. Plot width in inches.
 #' @param plot.height a numeric. Plot height in inches.
+#' @param thin a logical. Reduce number of data points when they are cluttered?
+#' @param thin.n an integer. Number of max points per horizontal partitions of the plot.
+#'   Defaults to 500.
 #'
 #' @return a ggplot object
 #'
@@ -16,7 +19,7 @@
 #' qqunif(x)
 qqunif <- function(
   x, outfn = NULL, conf.int = 0.95,
-  plot.width = 5, plot.height = 5
+  plot.width = 5, plot.height = 5, thin = TRUE, thin.n = 500
 ) {
 
   if (!is.atomic(x) || !is.numeric(x)) stop("x should be a numeric vector.")
@@ -27,11 +30,16 @@ qqunif <- function(
   }
   if (length(conf.int) != 1 || !is.numeric(conf.int)) stop("conf.int should be a numerical value.")
   if (conf.int <= 0 || conf.int >= 1) stop("conf.int should be between 0 and 1.")
+  if ((!is.logical(thin) || (length(thin) != 1)) || is.na(thin)) stop("thin should be a logical of length 1.")
+  if (!(is.numeric(thin.n) && length(thin.n) == 1)) stop("thin.n should be an integer of length 1.")
 
   x <- sort(x)
   N <- length(x)
   q <- 1:N / N
   qqdf <- data.frame(obs = -log10(x), exp = -log10(q))
+  if (thin) {
+    qqdf <- thinPoints(qqdf, value = "obs", n = thin.n)
+  }
 
   ## QQ plot using ggplot
   qqtitle <- "QQ Plot"

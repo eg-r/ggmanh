@@ -102,7 +102,7 @@ width of each chromosome is equal and the variants are equally spaced.}
 \item{thin}{a logical. Reduce number of data points when they are cluttered?}
 
 \item{thin.n}{an integer. Number of max points per horizontal partitions of the plot.
-Defaults to 500..}
+Defaults to 500.}
 
 \item{rescale}{a logical. If \code{TRUE}, the plot will rescale itself depending
 on the data. More on this in details.}

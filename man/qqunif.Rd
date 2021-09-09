@@ -4,7 +4,15 @@
 \alias{qqunif}
 \title{Plot Quantile-Quantile Plot of p-values against uniform distribution.}
 \usage{
-qqunif(x, outfn = NULL, conf.int = 0.95, plot.width = 5, plot.height = 5)
+qqunif(
+  x,
+  outfn = NULL,
+  conf.int = 0.95,
+  plot.width = 5,
+  plot.height = 5,
+  thin = TRUE,
+  thin.n = 500
+)
 }
 \arguments{
 \item{x}{a numeric vector of p-values. All values should be between 0 and 1.}
@@ -18,6 +26,11 @@ the graphics window.}
 \item{plot.width}{a numeric. Plot width in inches.}
 
 \item{plot.height}{a numeric. Plot height in inches.}
+
+\item{thin}{a logical. Reduce number of data points when they are cluttered?}
+
+\item{thin.n}{an integer. Number of max points per horizontal partitions of the plot.
+Defaults to 500.}
 }
 \value{
 a ggplot object

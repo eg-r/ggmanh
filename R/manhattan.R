@@ -32,7 +32,7 @@
 #'   width of each chromosome is equal and the variants are equally spaced.
 #' @param thin a logical. Reduce number of data points when they are cluttered?
 #' @param thin.n an integer. Number of max points per horizontal partitions of the plot.
-#'   Defaults to 500..
+#'   Defaults to 500.
 #'
 #' @return a MPdata object. This object contains all the necessary info for constructing
 #'   a manhattan plot.
