@@ -212,3 +212,9 @@ gds_annotate(
 
 The annotation is returned in the same order as the rows in the `data.frame`. If the parameter `gdsfile` is empty (`NULL`), then the default GDS is used.
 
+# SessionInfo
+
+```{r sessionInfo}
+sessionInfo()
+```
+

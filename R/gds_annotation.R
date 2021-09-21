@@ -8,7 +8,10 @@
 #' default_gds_path()
 #'
 #' @export
-default_gds_path <- function() system.file("extdata", "gnomad.exomes.vep.hg19.v5.gds", mustWork = TRUE, package = "ggmanh")
+default_gds_path <- function() {
+  message("Using default gds annotation file from ggmanh package. Run '?ggmanh_annotation_gds' for more information.")
+  system.file("extdata", "gnomad.exomes.vep.hg19.v5.gds", mustWork = TRUE, package = "ggmanh")
+}
 
 # retrieve annotation with position
 gds_retrieve_annot_pos <- function(
