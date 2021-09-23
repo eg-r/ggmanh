@@ -11,7 +11,8 @@ qqunif(
   plot.width = 5,
   plot.height = 5,
   thin = TRUE,
-  thin.n = 500
+  thin.n = 500,
+  zero.pval = "replace"
 )
 }
 \arguments{
@@ -31,6 +32,10 @@ the graphics window.}
 
 \item{thin.n}{an integer. Number of max points per horizontal partitions of the plot.
 Defaults to 500.}
+
+\item{zero.pval}{a character. Determine how to treat 0 pvals.
+"replace" will replace the p-value of zero with the non-zero minimum.
+"remove" will remove the p-value of zero.}
 }
 \value{
 a ggplot object

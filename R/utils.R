@@ -60,12 +60,23 @@ remove_na <- function(x, chr.colname, pos.colname, pval.colname) {
   return(x)
 }
 
-# TEMPORARY: remove entries where p-value is zero
-remove_0_pval <- function(x, pval.colname) {
-  zero_pval <- which(x[[pval.colname]] == 0)
+# TEMPORARY: replace entries where p-value is zero with the minimum
+# used by manhattan data preprocess andqqunif
+replace_0_pval <- function(x) {
+  zero_pval <- which(x == 0)
   if (length(zero_pval) > 0) {
-    warning("Removing observations with p.value = 0.")
-    x <- x[-zero_pval,]
+    warning("Replacing p-value of 0 with the minimum.")
+    x[zero_pval] <- min(x[-zero_pval], na.rm = TRUE)
+  }
+  return(x)
+}
+
+# remove entries where p-value is zero
+remove_0_pval <- function(x) {
+  zero_pval <- which(x == 0)
+  if (length(zero_pval) > 0) {
+    warning("Removing p-value of 0.")
+    x <- x[-zero_pval]
   }
   return(x)
 }

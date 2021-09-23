@@ -94,7 +94,7 @@ manhattan_data_preprocess <- function(
 
   # remove any results with missing chr, pos, or pval
   x <- remove_na(x, chr.colname, pos.colname, pval.colname)
-  x <- remove_0_pval(x, pval.colname)
+  x[[pval.colname]] <- replace_0_pval(x)
   signif.col <- preprocess_arg_check_out$signif.col
 
   # factorize chromosome column to set order of chromosomes for the plot

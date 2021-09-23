@@ -10,6 +10,9 @@
 #' @param thin a logical. Reduce number of data points when they are cluttered?
 #' @param thin.n an integer. Number of max points per horizontal partitions of the plot.
 #'   Defaults to 500.
+#' @param zero.pval a character. Determine how to treat 0 pvals.
+#' "replace" will replace the p-value of zero with the non-zero minimum.
+#' "remove" will remove the p-value of zero.
 #'
 #' @return a ggplot object
 #'
@@ -19,7 +22,8 @@
 #' qqunif(x)
 qqunif <- function(
   x, outfn = NULL, conf.int = 0.95,
-  plot.width = 5, plot.height = 5, thin = TRUE, thin.n = 500
+  plot.width = 5, plot.height = 5, thin = TRUE, thin.n = 500,
+  zero.pval = "replace"
 ) {
 
   if (!is.atomic(x) || !is.numeric(x)) stop("x should be a numeric vector.")
@@ -32,6 +36,14 @@ qqunif <- function(
   if (conf.int <= 0 || conf.int >= 1) stop("conf.int should be between 0 and 1.")
   if ((!is.logical(thin) || (length(thin) != 1)) || is.na(thin)) stop("thin should be a logical of length 1.")
   if (!(is.numeric(thin.n) && length(thin.n) == 1)) stop("thin.n should be an integer of length 1.")
+
+  if (zero.pval == "replace") {
+    x <- replace_0_pval(x)
+  } else if (zero.pval == "remove") {
+    x <- remove_0_pval(x)
+  } else {
+    stop("zero.pval should be \"replace\" or \"remove\"")
+  }
 
   x <- sort(x)
   N <- length(x)
