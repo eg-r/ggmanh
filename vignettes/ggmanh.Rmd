@@ -50,7 +50,7 @@ nsim <- 50000
 
 simdata <- data.frame(
   "chromosome" = sample(c(1:22,"X"), size = nsim, replace = TRUE),
-  "position" = sample(1:1000000, size = nsim),
+  "position" = sample(1:100000000, size = nsim),
   "P.value" = rbeta(nsim, shape1 = 5, shape2 = 1)^7
 )
 ```
@@ -170,7 +170,7 @@ Another simple, yet useful, feature of the package is a function called `thinPoi
 
 ## Zoom into Chromosome
 
-`manhattan_chromosome` lets you zoom into a chromosome if you are interested in a specific chromosome.
+`manhattan_chromosome` zooms into a chromosome if you are interested in a specific chromosome.
 
 ```{r chromosome}
 manhattan_chromosome(simdata, pval.colname = "P.value", chr.colname = "chromosome", pos.colname = "position", chromosome = 5)
@@ -178,9 +178,9 @@ manhattan_chromosome(simdata, pval.colname = "P.value", chr.colname = "chromosom
 
 # Annotation with GDS File
 
-The package also comes with a small [GDS file](https://academic.oup.com/bioinformatics/article/33/15/2251/3072873) that contains chromosome, position, reference / alternate allele, and [Ensembl Variant Effect Predictor](https://useast.ensembl.org/info/docs/tools/vep/index.html) of highest consequence. We obtained exomic data from the [GnomAD database](https://gnomad.broadinstitute.org/downloads), converted the VCF file to GDS file, and did some cleaning to get this final GDS file. The gds data that comes with this package can be located with this code after installation.
+The package also comes with a small [GDS file](https://academic.oup.com/bioinformatics/article/33/15/2251/3072873) in a [SeqArray](https://bioconductor.org/packages/release/bioc/html/SeqArray.html) file format that contains chromosome, position, reference / alternate allele, and [Ensembl Variant Effect Predictor](https://useast.ensembl.org/info/docs/tools/vep/index.html) of highest consequence. We obtained exomic data from the [GnomAD database](https://gnomad.broadinstitute.org/downloads) in VCF format, then converted to GDS file. Finally, some cleaning was done to get this final GDS file. The gds data that comes with this package can be located with this code after installation.
 
-```{r locate_gds}
+```{r locate_gds, results="hide"}
 default_gds_path <- system.file("extdata", "gnomad.exomes.vep.hg19.v5.gds", mustWork = TRUE, package = "ggmanh")
 print(default_gds_path)
 
@@ -189,7 +189,7 @@ print(gds)
 SeqArray::seqClose(gds)
 ```
 
-The gds file contains `position`, `chromosome`, and `allele` (reference and alternate), which can be used to search variants. In this file, the Gene Symbol, consequence, and the Loss of Function predictor predicted by VEP are stored in `annotation/symbol`, `annotation/consequence`, `annnotation/LoF`, respectively. We were able to keep the annotation data size small due to several reasons:
+The gds file contains `position`, `chromosome`, and `allele` (reference and alternate), which can be used to search variants. In this file, the gene symbol, consequence (by VEP), and the loss of function predictor (by LOFTEE) are stored in `annotation/symbol`, `annotation/consequence`, `annnotation/LoF`, respectively. We were able to keep the annotation data size small due to several reasons:
 
     * We have removed RS IDs, which is stored in `annotation/id`. Although the gds file has the capabilities to store the RS IDs, we removed them to save space
     * Each variant may have multiple Gene/Consequence predicted by VEP. For example, VEP predicts rs429358 to have an effect on APOE and TOMM40 genes. We've selected only one effect with the highest consequence in this case. Only one predicted effect is included for each variant.
@@ -199,18 +199,37 @@ The gds file contains `position`, `chromosome`, and `allele` (reference and alte
 
 ```{r gds_annotation_demonstration}
 sampledata <- data.frame(
-  Chromosome = c(1, 17, 19, 22),
-  Position = c(12422750, 10366900, 43439739, 39710145), 
+  chromosome = c(1, 17, 19, 22),
+  position = c(12422750, 10366900, 43439739, 39710145), 
   Reference = c("A", "T", "T", "G"),
   Alternate = c("G", "G", "C", "A")
 )
 gds_annotate(
   sampledata, annot.method = "position", 
-  chr = "Chromosome", pos = "Position", ref = "Reference", alt = "Alternate"
+  chr = "chromosome", pos = "position", ref = "Reference", alt = "Alternate"
   )
 ```
 
-The annotation is returned in the same order as the rows in the `data.frame`. If the parameter `gdsfile` is empty (`NULL`), then the default GDS is used.
+Annotations are returned in the same order as the rows in the `data.frame`. If the parameter `gdsfile` is empty (`NULL`), then the default GDS file is used.
+
+There are two ways to retrieve annotations. One way is to match the variants by chromosome, position, reference allele, and alternate allele. Another way is to match by RS ID (the RS ID needs to be stored in "annotation/id" in the annotation gds file. Look up documentation for `SeqArray::seqSetFilterAnnotID` for more detail).
+
+Therefore, you can use `gds_annotate` to quickly add annotations to the GWAS summary results, and then plot manhattan plot with annotations.
+
+```{r manhattan_label_with_gds}
+simdata$Reference <- NA
+simdata$Alternate <- NA
+simdata <- simdata[,c("chromosome", "position", "Reference", "Alternate", "P.value")]
+sampledata$P.value <- 10^-rnorm(4, 14, 1)
+sampledata <- sampledata[c("chromosome", "position", "Reference", "Alternate", "P.value")]
+simdata_label <- rbind(simdata, sampledata)
+
+# add annotation
+simdata_label$label <- gds_annotate(x = simdata_label, annot.method = "position", chr = "chromosome", pos = "position", ref = "Reference", alt = "Alternate")
+
+manhattan_plot(simdata_label, outfn = NULL, pval.colname = "P.value", chr.colname = "chromosome", pos.colname = "position", label.colname = "label")
+```
+
 
 # SessionInfo
 

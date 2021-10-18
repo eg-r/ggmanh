@@ -35,7 +35,8 @@ gds_annotate(
 \item{annotation_names}{a character vector of nodes of the \code{gdsfile} that are to be extracted.}
 }
 \value{
-a character vector the length of \code{nrow(x)} if \code{concat_char} is a character.
+A character vector the length of \code{nrow(x)} if \code{concat_char} is a character.
+A data frame with \code{nrow(x)} rows and \code{length(annotation_names)} if \code{concat_char} is null.
 }
 \description{
 Retrieve variant annotation stored in a GDS file with chromosome location or rs.id.

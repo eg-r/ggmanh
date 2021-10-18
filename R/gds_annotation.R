@@ -30,6 +30,9 @@ gds_retrieve_annot_pos <- function(
     stop("The length of chr, pos, ref, and alt should be at least 1.")
   }
 
+  # if chr is a factor, convert to character
+  if (is.factor(chr)) chr <- as.character(chr)
+
   # check that annotation_names exist in gds
   if (!gds_node_exists(gds, annotation_names)) stop("Some of annotation_names do not exist in the gds file.")
 
@@ -95,7 +98,8 @@ gds_retrieve_annot_rsid <- function(
 #' @param annotation_names a character vector of nodes of the \code{gdsfile} that are to be extracted.
 #' @param verbose output messages.
 #'
-#' @return a character vector the length of \code{nrow(x)} if \code{concat_char} is a character.
+#' @return A character vector the length of \code{nrow(x)} if \code{concat_char} is a character.
+#' A data frame with \code{nrow(x)} rows and \code{length(annotation_names)} if \code{concat_char} is null.
 #'
 #' @examples
 #' vardata <- data.frame(
@@ -128,7 +132,6 @@ gds_annotate <- function(
 
   # check & open gdsfile
   if (is.null(gdsfile)) {
-    if (verbose) message("Using default gds...\n")
     gdsfile <- default_gds_path()
   }
 

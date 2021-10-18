@@ -1,0 +1,8 @@
+The original annotation file is from the gnomAD v2.1.1 exome release, available for download at: https://gnomad.broadinstitute.org/downloads. 
+The files have been converted from VCF to the GDS (Genomic Data Structure) format. The GDS file is then manually curated to fit the size requirement for R Bioconductor packages. The changes to the annotation file include:
+
+	- include only variants with global minor allele frequency >= 0.0002
+	- keep chromosome, position, allele, gene symbol, VEP predicted consequence, and predicted loss of function
+	- only the predicted consequence with highest severity was kept for each variant
+
+This process was done in R using the SeqArray package.
