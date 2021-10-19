@@ -2,16 +2,17 @@
 % Please edit documentation in R/manhattan.R
 \name{manhattan_plot}
 \alias{manhattan_plot}
-\alias{manhattan_plot.default}
-\alias{manhattan_plot.data.frame}
-\alias{manhattan_plot.MPdata}
+\alias{manhattan_plot,ANY-method}
+\alias{manhattan_plot,data.frame-method}
+\alias{manhattan_plot,MPdata-method}
+\alias{manhattan_plot,GRanges-method}
 \title{Manhattan Plotting}
 \usage{
 manhattan_plot(x, ...)
 
-\method{manhattan_plot}{default}(x, ...)
+\S4method{manhattan_plot}{ANY}(x, ...)
 
-\method{manhattan_plot}{data.frame}(
+\S4method{manhattan_plot}{data.frame}(
   x,
   outfn = NULL,
   signif = c(5e-08, 1e-05),
@@ -43,7 +44,7 @@ manhattan_plot(x, ...)
   ...
 )
 
-\method{manhattan_plot}{MPdata}(
+\S4method{manhattan_plot}{MPdata}(
   x,
   outfn = NULL,
   rescale = TRUE,
@@ -60,6 +61,36 @@ manhattan_plot(x, ...)
   plot.subtitle = ggplot2::waiver(),
   plot.width = 10,
   plot.height = 5,
+  ...
+)
+
+\S4method{manhattan_plot}{GRanges}(
+  x,
+  outfn = NULL,
+  signif = c(5e-08, 1e-05),
+  pval.colname = "pval",
+  label.colname = NULL,
+  highlight.colname = NULL,
+  chr.order = NULL,
+  signif.col = NULL,
+  chr.col = NULL,
+  highlight.col = NULL,
+  rescale = TRUE,
+  rescale.ratio.threshold = 5,
+  signif.rel.pos = 0.4,
+  color.by.highlight = FALSE,
+  preserve.position = FALSE,
+  thin = TRUE,
+  thin.n = 500,
+  plot.title = ggplot2::waiver(),
+  plot.subtitle = ggplot2::waiver(),
+  plot.width = 10,
+  plot.height = 5,
+  point.size = 0.75,
+  label.font.size = 2,
+  max.overlaps = 20,
+  x.label = "Chromosome",
+  y.label = expression(-log[10](p)),
   ...
 )
 }

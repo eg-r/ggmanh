@@ -19,6 +19,7 @@ Imports:
     ggrepel,
     grDevices,
     magrittr,
+    methods,
     RColorBrewer,
     rlang,
     scales,

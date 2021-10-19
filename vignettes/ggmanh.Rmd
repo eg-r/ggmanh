@@ -16,9 +16,18 @@ Manhattan plot is commonly used to display significant Single Nucleotide Polymor
 This function addresses this problem by rescaling the y-axis according to the range of y.
 There are more features, such as labelling without overlap (with the help of [ggprepel package](https://ggrepel.slowkow.com)), reflecting the size of chromosomes along the x-axis, and displaying significant lines.
 
+Installation :
+
+```{r, eval = FALSE}
+if (!require("BiocManager"))
+    install.packages("BiocManager")
+BiocManager::install("ggmanh")
+```
+
+
 # About the functions
 
-`manhattan_plot()` is a generic method that can take a `data.frame` or `MPdata` object. The `data.frame`, at bare minimum, must have three columns containing: `chromosome`, `position`, and `p.value`.
+`manhattan_plot()` is a generic method that can take a `data.frame`, `MPdata`, or a `GRanges` object. The `data.frame`, at bare minimum, must have three columns containing: `chromosome`, `position`, and `p.value`. For a `GRanges` object, meta data column name for the p-value needs to be passed.
 
 There are two steps to this function: preprocess data and plot data. The preprocessing step (accomplished with `manhattan_data_preprocess()`) preprocesses the data by calculating the new x-position to map to the plot (`new_pos` column added to the data), "thining" the data points, and saving other graphical information needed for manhattan plot, which is returned as a `MPdata` object. The plot step (accomplished with `manhattan_plot()`) determines if rescaling of the y-axis is needed and plots / saves the manhattan plot.
 

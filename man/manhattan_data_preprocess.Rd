@@ -2,9 +2,16 @@
 % Please edit documentation in R/manhattan.R
 \name{manhattan_data_preprocess}
 \alias{manhattan_data_preprocess}
+\alias{manhattan_data_preprocess,ANY-method}
+\alias{manhattan_data_preprocess,data.frame-method}
+\alias{manhattan_data_preprocess,GRanges-method}
 \title{Preprocess GWAS Result}
 \usage{
-manhattan_data_preprocess(
+manhattan_data_preprocess(x, ...)
+
+\S4method{manhattan_data_preprocess}{ANY}(x, ...)
+
+\S4method{manhattan_data_preprocess}{data.frame}(
   x,
   signif = c(5e-08, 1e-05),
   pval.colname = "pval",
@@ -19,10 +26,26 @@ manhattan_data_preprocess(
   thin = TRUE,
   thin.n = 500
 )
+
+\S4method{manhattan_data_preprocess}{GRanges}(
+  x,
+  signif = c(5e-08, 1e-05),
+  pval.colname = "pval",
+  highlight.colname = NULL,
+  chr.order = NULL,
+  signif.col = NULL,
+  chr.col = NULL,
+  highlight.col = NULL,
+  preserve.position = FALSE,
+  thin = TRUE,
+  thin.n = 500
+)
 }
 \arguments{
 \item{x}{a data frame or any other extension of data frame (e.g. a tibble).
 At bare minimum, it should contain chromosome, position, and p-value.}
+
+\item{...}{Additional arguments for manhattan_data_preprocess.}
 
 \item{signif}{a numeric vector. Significant p-value thresholds to be drawn for
 manhattan plot. At least one value should be provided. Default value is c(5e-08, 1e-5)}
@@ -69,7 +92,7 @@ Preprocesses a result from Genome Wide Association Study
 before making a manhattan plot.
 It accepts a \code{data.frame}, which at bare minimum should
 contain a chromosome, position, and p-value.
-Additional options, such as chromosome color, label columnames,
+Additional options, such as chromosome color, label colum names,
 and colors for specific variants, are provided here.
 }
 \details{
