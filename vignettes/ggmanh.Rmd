@@ -1,22 +1,24 @@
 ---
 title: "Guide to ggmanh Package"
-output: rmarkdown::html_vignette
+output: BiocStyle::html_document
+package: ggmanh
 vignette: >
-  %\VignetteIndexEntry{Guide to ggmanh Package}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+    %\VignetteIndexEntry{Guide to ggmanh Package}
+    %\VignetteEngine{knitr::rmarkdown}
+    %\VignetteEncoding{UTF-8}  
+toc_float: true
 ---
 
 # Introduction
 
 The package `ggmanh` is aimed to provide easy and direct access to visualisation to the GWAS / PWAS results while also providing many functionalities and features. 
 
-Manhattan plot is commonly used to display significant Single Nucleotide Polymorphisms (SNPs) in Genome Wide Association Study (GWAS). The x-axis is divided into chromosomes, and subdivided further by the SNP position. The y-axis typically represents $-10*log(p value)$. Majority of the points have low y-values, with some of the significant SNPs having high y-values. It is not uncommon to see strong association between SNPs and a phenotype, yielding a high y-value. This results in a wide y-scales in which SNPs with lower significance are squished. 
+Manhattan plot is commonly used to display significant Single Nucleotide Polymorphisms (SNPs) in Genome Wide Association Study (GWAS). The x-axis is divided into chromosomes, and SNPs are plotted in their respective positions. The y-axis typically represents $-10*log(p value)$. Majority of the points have low y-values, with some of the significant SNPs having high y-values. It is not uncommon to see strong association between SNPs and a phenotype, yielding a high y-value. This results in a wide y-scales in which SNPs with lower significance are squished. 
 
 This function addresses this problem by rescaling the y-axis according to the range of y.
 There are more features, such as labelling without overlap (with the help of [ggprepel package](https://ggrepel.slowkow.com)), reflecting the size of chromosomes along the x-axis, and displaying significant lines.
 
-Installation :
+The package can be installed by:
 
 ```{r, eval = FALSE}
 if (!require("BiocManager"))
@@ -25,13 +27,13 @@ BiocManager::install("ggmanh")
 ```
 
 
-# About the functions
+# Functions Overview
 
 `manhattan_plot()` is a generic method that can take a `data.frame`, `MPdata`, or a `GRanges` object. The `data.frame`, at bare minimum, must have three columns containing: `chromosome`, `position`, and `p.value`. For a `GRanges` object, meta data column name for the p-value needs to be passed.
 
 There are two steps to this function: preprocess data and plot data. The preprocessing step (accomplished with `manhattan_data_preprocess()`) preprocesses the data by calculating the new x-position to map to the plot (`new_pos` column added to the data), "thining" the data points, and saving other graphical information needed for manhattan plot, which is returned as a `MPdata` object. The plot step (accomplished with `manhattan_plot()`) determines if rescaling of the y-axis is needed and plots / saves the manhattan plot.
 
-While using `manhattan_plot()` on `data.frame` is sufficient, it is fine to separately run preprocessing and plotting if you want to customize the plot without having to preprocess again and again.
+While using `manhattan_plot()` on `data.frame` is sufficient, it is fine to separately run pre-processing and plotting for customizing the plot without having to preprocess again and again.
 
 # Example with Simulated GWAS
 

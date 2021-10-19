@@ -28,6 +28,7 @@ Imports:
 Depends:
     ggplot2
 Suggests: 
+    BiocStyle,
     rmarkdown,
     knitr,
     testthat (>= 3.0.0),
