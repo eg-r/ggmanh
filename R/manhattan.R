@@ -216,7 +216,7 @@ manhattan_plot.MPdata <- function(
 #' @rdname manhattan_plot
 #' @method manhattan_plot GRanges
 #' @export
-methods::setMethod(
+setMethod(
   "manhattan_plot", signature = "GRanges",
   function(
     x, outfn = NULL, signif = c(5e-8, 1e-5), pval.colname = "pval", label.colname = NULL,

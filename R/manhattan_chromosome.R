@@ -216,7 +216,7 @@ manhattan_chromosome.MPdata <- function(
 #' @rdname manhattan_chromosome
 #' @method manhattan_chomosome GRanges
 #' @export
-methods::setMethod(
+setMethod(
   "manhattan_chromosome", signature = "GRanges",
   function(
     x, chromosome, outfn = NULL, signif = c(5e-8, 1e-5),

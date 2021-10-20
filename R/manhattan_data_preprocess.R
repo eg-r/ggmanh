@@ -193,7 +193,7 @@ manhattan_data_preprocess.data.frame <- function(
 #' @rdname manhattan_data_preprocess
 #' @method manhattan_data_preprocess GRanges
 #' @export
-methods::setMethod(
+setMethod(
   "manhattan_data_preprocess", signature = "GRanges",
   function(
     x, signif = c(5e-8, 1e-5), pval.colname = "pval", highlight.colname = NULL, chr.order = NULL,

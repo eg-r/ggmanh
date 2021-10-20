@@ -1,6 +1,6 @@
 Package: ggmanh
 Title: Visualization Tool for GWAS Result
-Version: 0.99.4
+Version: 0.99.5
 Authors@R: c(
         person(given = "John", family = "Lee", role = c("aut", "cre"), email = "john.lee@abbvie.com"),
         person(given = "Xiuwen", family = "Zheng", role = c("ctb", "dtc"), email = "xiuwen.zheng@abbvie.com")
@@ -19,13 +19,13 @@ Imports:
     ggrepel,
     grDevices,
     magrittr,
-    methods,
     RColorBrewer,
     rlang,
     scales,
     SeqArray (>= 1.32.0),
     stats
 Depends:
+    methods,
     ggplot2
 Suggests: 
     BiocStyle,
