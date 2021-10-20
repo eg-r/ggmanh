@@ -12,7 +12,7 @@ manhattan_plot(x, ...)
 
 manhattan_plot.default(x, ...)
 
-manhattan_plot.data.frame(
+\method{manhattan_plot}{data.frame}(
   x,
   outfn = NULL,
   signif = c(5e-08, 1e-05),

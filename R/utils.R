@@ -14,17 +14,18 @@ preprocess_arg_check <- function(
     preprocess_checklist$signif.col <- rep("grey", length(signif))
     preprocess_checklist$signif.col[which.max(-log10(signif))] <- "black"
   } else if (!all(valid_colors)) {
-    warning("invalid signif.col colors... using default colors")
+    warning("invalid signif.col colors... using default colors.")
     preprocess_checklist$signif.col <- rep("grey", length(signif))
     preprocess_checklist$signif.col[which.max(-log10(signif))] <- "black"
   }
 
   # check that the supplied column names exist
   if (!all(c(is.character(pval.colname), is.character(chr.colname), is.character(pos.colname)))) {
-    stop("Column names should be characters")
+    stop("Column names should be characters.")
   }
   if (!all(c(pval.colname, chr.colname, pos.colname) %in% colnames(x))) {
-    stop("Column name(s) not in data.frame.")
+    tmp <- c(pval.colname, chr.colname, pos.colname)
+    stop(sprintf("Column name(s) not in data: %s.", paste0(tmp[!(tmp %in% colnames(x))], collapse = ", ")))
   }
   if (pval.colname == "log10pval") {
     stop("Choose a different name for pvalue column name.")
