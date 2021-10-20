@@ -50,14 +50,11 @@
 #' )
 #'
 #' @export
-methods::setGeneric("manhattan_data_preprocess", function(x, ...) standardGeneric("manhattan_data_preprocess"), signature = "x")
+manhattan_data_preprocess <- function(x, ...) UseMethod("manhattan_data_preprocess")
 
 #' @rdname manhattan_data_preprocess
 #' @export
-methods::setMethod(
-  "manhattan_data_preprocess", signature = "ANY",
-  function(x, ...) stop("Provide a valid data.frame or GRanges object to preprocess.")
-)
+manhattan_data_preprocess.default <- function(x, ...) stop("Provide a valid data.frame or GRanges object to preprocess.")
 
 #' @rdname manhattan_data_preprocess
 #'
@@ -87,113 +84,110 @@ methods::setMethod(
 #'   Defaults to 500.
 #' @importFrom ggplot2 waiver
 #' @export
-methods::setMethod(
-  "manhattan_data_preprocess", signature = "data.frame",
-  function(
-    x, signif = c(5e-8, 1e-5), pval.colname = "pval",
-    chr.colname = "chr", pos.colname = "pos", highlight.colname = NULL, chr.order = NULL,
-    signif.col = NULL, chr.col = NULL, highlight.col = NULL, preserve.position = FALSE, thin = TRUE,
-    thin.n = 500
-  ) {
+manhattan_data_preprocess.data.frame <- function(
+  x, signif = c(5e-8, 1e-5), pval.colname = "pval",
+  chr.colname = "chr", pos.colname = "pos", highlight.colname = NULL, chr.order = NULL,
+  signif.col = NULL, chr.col = NULL, highlight.col = NULL, preserve.position = FALSE, thin = TRUE,
+  thin.n = 500
+) {
 
-    # what manhattan preprocess does:
-    # orders the chromosome levels (X axis)
-    # calculate x plot position for each variant based on chromosome width, gap.
-    # Remove any results with missing chromosome of position
-    # also, preprocess data for chromosome color, significance linetype, color, etc.
+  # what manhattan preprocess does:
+  # orders the chromosome levels (X axis)
+  # calculate x plot position for each variant based on chromosome width, gap.
+  # Remove any results with missing chromosome of position
+  # also, preprocess data for chromosome color, significance linetype, color, etc.
 
-    # run checks on several arguments
-    preprocess_arg_check_out <- preprocess_arg_check(
-      x =x, signif = signif, signif.col = signif.col,
-      pval.colname = pval.colname, chr.colname = chr.colname,
-      pos.colname = pos.colname, preserve.position = preserve.position)
+  # run checks on several arguments
+  preprocess_arg_check_out <- preprocess_arg_check(
+    x =x, signif = signif, signif.col = signif.col,
+    pval.colname = pval.colname, chr.colname = chr.colname,
+    pos.colname = pos.colname, preserve.position = preserve.position)
 
-    # remove any results with missing chr, pos, or pval
-    x <- remove_na(x, chr.colname, pos.colname, pval.colname)
-    x[[pval.colname]] <- replace_0_pval(x[[pval.colname]])
-    signif.col <- preprocess_arg_check_out$signif.col
+  # remove any results with missing chr, pos, or pval
+  x <- remove_na(x, chr.colname, pos.colname, pval.colname)
+  x[[pval.colname]] <- replace_0_pval(x[[pval.colname]])
+  signif.col <- preprocess_arg_check_out$signif.col
 
-    # factorize chromosome column to set order of chromosomes for the plot
-    if (!is.null(chr.order)) {
-      x[[chr.colname]] <- factor(x[[chr.colname]], levels = chr.order)
-    } else if (!is.factor(x[[chr.colname]])) {
-      x[[chr.colname]] <- factor(x[[chr.colname]])
-      chr.order <- levels(x[[chr.colname]])
-    } else {
-      chr.order <- levels(x[[chr.colname]])
-    }
-    nchr <- length(chr.order)
-
-    # chromosome / highlight color mapping
-    chr.col <- set_chr_col(chr.col, nchr, chr.order)
-    if (!is.null(highlight.colname)) {
-      highlight.col <- set_highlight_col(x, highlight.colname, highlight.col)
-    }
-
-    # map each position in the chromosome to new positions
-    x <- x[order(x[[chr.colname]], x[[pos.colname]]), ]
-
-    if (preserve.position) {
-      # scale the width of chromosome proportional to number of points in chromosome
-      # keep original positioning
-      chr_width <- table(x[[chr.colname]])
-      chr_width <- as.numeric(chr_width); names(chr_width) <- chr.order
-      chr_width <- chr_width / sum(chr_width) * nchr
-
-      new_pos <-
-        unlist(
-          tapply(x[[pos.colname]], x[[chr.colname]], FUN = function(y) sequence_along_chr_scaled(y), simplify = FALSE),
-          use.names = FALSE) * unname(chr_width[as.character(x[[chr.colname]])])
-
-    } else {
-      # all chromsomes have equal length & all variants are equally spaced
-      chr_width <- rep(1, nchr)
-      names(chr_width) <- chr.order
-
-      new_pos <-
-        unlist(
-          tapply(x[[pos.colname]], x[[chr.colname]], FUN = function(y) sequence_along_chr_unscaled(y), simplify = FALSE),
-          use.names = FALSE) * unname(chr_width[as.character(x[[chr.colname]])])
-    }
-
-    # fix certain widths for each chromosome, and gap for in between chromosomes
-    lg <- 0.15 / 26 * nchr # gap between chromosome (should be robust with different lengths of chromosme)
-    start_pos <- c(0, cumsum(chr_width)[-nchr]) + ((1:nchr - 1) * lg)
-    names(start_pos) <- chr.order # starting x-coordinate for each chr
-    end_pos <- start_pos + chr_width # ending x-coordinate for each chr
-    center_pos <- (start_pos + end_pos) / 2 # middle x-coordinate for each chr... used for x axis labelling
-    x$new_pos <- new_pos + start_pos[as.character(x[[chr.colname]])]
-
-    # -log10(pvalue)
-    x$log10pval <- -log10(x[[pval.colname]])
-
-    # thin data points if it set to true
-    if (thin) {
-      x <- thinPoints(dat = x, value = "log10pval", n = thin.n, nbins = 200, groupBy = chr.colname)
-    }
-
-    # Create MPdata Class
-    mpdata <- list(
-      data = x,
-      start_pos = start_pos,
-      center_pos = center_pos,
-      end_pos = end_pos,
-      signif = signif,
-      signif.col = signif.col,
-      chr.col = chr.col,
-      highlight.colname = highlight.colname,
-      highlight.col = highlight.col,
-      chr.labels = chr.order,
-      chr.colname = chr.colname,
-      pos.colname = "new_pos",
-      true.pos.colname = pos.colname,
-      pval.colname = "log10pval"
-    )
-    class(mpdata) <- "MPdata"
-
-    return(mpdata)
+  # factorize chromosome column to set order of chromosomes for the plot
+  if (!is.null(chr.order)) {
+    x[[chr.colname]] <- factor(x[[chr.colname]], levels = chr.order)
+  } else if (!is.factor(x[[chr.colname]])) {
+    x[[chr.colname]] <- factor(x[[chr.colname]])
+    chr.order <- levels(x[[chr.colname]])
+  } else {
+    chr.order <- levels(x[[chr.colname]])
   }
-)
+  nchr <- length(chr.order)
+
+  # chromosome / highlight color mapping
+  chr.col <- set_chr_col(chr.col, nchr, chr.order)
+  if (!is.null(highlight.colname)) {
+    highlight.col <- set_highlight_col(x, highlight.colname, highlight.col)
+  }
+
+  # map each position in the chromosome to new positions
+  x <- x[order(x[[chr.colname]], x[[pos.colname]]), ]
+
+  if (preserve.position) {
+    # scale the width of chromosome proportional to number of points in chromosome
+    # keep original positioning
+    chr_width <- table(x[[chr.colname]])
+    chr_width <- as.numeric(chr_width); names(chr_width) <- chr.order
+    chr_width <- chr_width / sum(chr_width) * nchr
+
+    new_pos <-
+      unlist(
+        tapply(x[[pos.colname]], x[[chr.colname]], FUN = function(y) sequence_along_chr_scaled(y), simplify = FALSE),
+        use.names = FALSE) * unname(chr_width[as.character(x[[chr.colname]])])
+
+  } else {
+    # all chromsomes have equal length & all variants are equally spaced
+    chr_width <- rep(1, nchr)
+    names(chr_width) <- chr.order
+
+    new_pos <-
+      unlist(
+        tapply(x[[pos.colname]], x[[chr.colname]], FUN = function(y) sequence_along_chr_unscaled(y), simplify = FALSE),
+        use.names = FALSE) * unname(chr_width[as.character(x[[chr.colname]])])
+  }
+
+  # fix certain widths for each chromosome, and gap for in between chromosomes
+  lg <- 0.15 / 26 * nchr # gap between chromosome (should be robust with different lengths of chromosme)
+  start_pos <- c(0, cumsum(chr_width)[-nchr]) + ((1:nchr - 1) * lg)
+  names(start_pos) <- chr.order # starting x-coordinate for each chr
+  end_pos <- start_pos + chr_width # ending x-coordinate for each chr
+  center_pos <- (start_pos + end_pos) / 2 # middle x-coordinate for each chr... used for x axis labelling
+  x$new_pos <- new_pos + start_pos[as.character(x[[chr.colname]])]
+
+  # -log10(pvalue)
+  x$log10pval <- -log10(x[[pval.colname]])
+
+  # thin data points if it set to true
+  if (thin) {
+    x <- thinPoints(dat = x, value = "log10pval", n = thin.n, nbins = 200, groupBy = chr.colname)
+  }
+
+  # Create MPdata Class
+  mpdata <- list(
+    data = x,
+    start_pos = start_pos,
+    center_pos = center_pos,
+    end_pos = end_pos,
+    signif = signif,
+    signif.col = signif.col,
+    chr.col = chr.col,
+    highlight.colname = highlight.colname,
+    highlight.col = highlight.col,
+    chr.labels = chr.order,
+    chr.colname = chr.colname,
+    pos.colname = "new_pos",
+    true.pos.colname = pos.colname,
+    pval.colname = "log10pval"
+  )
+  class(mpdata) <- "MPdata"
+
+  return(mpdata)
+}
 
 #' @rdname manhattan_data_preprocess
 #' @export
@@ -272,51 +266,45 @@ methods::setMethod(
 #'
 #' @rdname manhattan_plot
 #' @export
-methods::setGeneric("manhattan_plot", function(x, ...) standardGeneric("manhattan_plot"), signature = "x")
+manhattan_plot <- function(x, ...) UseMethod("manhattan_plot")
 
 #' @rdname manhattan_plot
 #' @export
-methods::setMethod(
-  "manhattan_plot", signature = "ANY",
-  function(x, ...) stop("Provide a data.frame to preprocess & plot or a preprocessed MPdata object.")
-)
+manhattan_plot.default <- function(x, ...) stop("Provide a data.frame to preprocess & plot or a preprocessed MPdata object.")
 
 #' @rdname manhattan_plot
 #'
 #' @export
-methods::setMethod(
-  "manhattan_plot", signature = "data.frame",
-  function(
-    x, outfn = NULL, signif = c(5e-8, 1e-5), pval.colname = "pval", chr.colname = "chr",
-    pos.colname = "pos", label.colname = NULL, highlight.colname = NULL, chr.order = NULL,
-    signif.col = NULL, chr.col = NULL,  highlight.col = NULL,
-    rescale = TRUE, rescale.ratio.threshold = 5, signif.rel.pos = 0.4, color.by.highlight = FALSE,
-    preserve.position = FALSE, thin = TRUE, thin.n = 500,
-    plot.title = ggplot2::waiver(), plot.subtitle = ggplot2::waiver(), plot.width = 10, plot.height = 5,
-    point.size = 0.75, label.font.size = 2, max.overlaps = 20,
-    x.label = "Chromosome", y.label = expression(-log[10](p)), ...
-  ) {
+manhattan_plot.data.frame <- function(
+  x, outfn = NULL, signif = c(5e-8, 1e-5), pval.colname = "pval", chr.colname = "chr",
+  pos.colname = "pos", label.colname = NULL, highlight.colname = NULL, chr.order = NULL,
+  signif.col = NULL, chr.col = NULL,  highlight.col = NULL,
+  rescale = TRUE, rescale.ratio.threshold = 5, signif.rel.pos = 0.4, color.by.highlight = FALSE,
+  preserve.position = FALSE, thin = TRUE, thin.n = 500,
+  plot.title = ggplot2::waiver(), plot.subtitle = ggplot2::waiver(), plot.width = 10, plot.height = 5,
+  point.size = 0.75, label.font.size = 2, max.overlaps = 20,
+  x.label = "Chromosome", y.label = expression(-log[10](p)), ...
+) {
 
-    # preprocess manhattan plot data
-    mpdata <- manhattan_data_preprocess(
-      x, signif = signif, pval.colname = pval.colname,
-      chr.colname = chr.colname, pos.colname = pos.colname, chr.order = chr.order,
-      signif.col = signif.col, chr.col = chr.col, highlight.colname = highlight.colname,
-      highlight.col = highlight.col, preserve.position = preserve.position, thin = thin
-    )
+  # preprocess manhattan plot data
+  mpdata <- manhattan_data_preprocess(
+    x, signif = signif, pval.colname = pval.colname,
+    chr.colname = chr.colname, pos.colname = pos.colname, chr.order = chr.order,
+    signif.col = signif.col, chr.col = chr.col, highlight.colname = highlight.colname,
+    highlight.col = highlight.col, preserve.position = preserve.position, thin = thin
+  )
 
-    # manhattan plot
-    manhattan_plot(
-      x = mpdata, outfn = outfn, rescale = rescale, rescale.ratio.threshold = rescale.ratio.threshold,
-      signif.rel.pos = signif.rel.pos, color.by.highlight = color.by.highlight,
-      label.colname = label.colname, x.label = x.label, y.label = y.label,
-      point.size = point.size, label.font.size = label.font.size,
-      max.overlaps = max.overlaps, plot.title = plot.title, plot.subtitle = plot.subtitle,
-      plot.width = plot.width, plot.height = plot.height, ...
-    )
+  # manhattan plot
+  manhattan_plot(
+    x = mpdata, outfn = outfn, rescale = rescale, rescale.ratio.threshold = rescale.ratio.threshold,
+    signif.rel.pos = signif.rel.pos, color.by.highlight = color.by.highlight,
+    label.colname = label.colname, x.label = x.label, y.label = y.label,
+    point.size = point.size, label.font.size = label.font.size,
+    max.overlaps = max.overlaps, plot.title = plot.title, plot.subtitle = plot.subtitle,
+    plot.width = plot.width, plot.height = plot.height, ...
+  )
 
-  }
-)
+}
 
 #' @rdname manhattan_plot
 #' @method manhattan_plot MPdata
@@ -344,16 +332,14 @@ methods::setMethod(
 #' @param ... additional arguments to be passed onto \code{geom_label_repel}
 #'
 #' @export
-methods::setMethod(
-  "manhattan_plot", signature = "MPdata",
-  function(
-    x, outfn = NULL,
-    rescale = TRUE, rescale.ratio.threshold = 5, signif.rel.pos = 0.4, color.by.highlight = FALSE,
-    label.colname = NULL, x.label = "Chromosome", y.label = expression(-log[10](p)),
-    point.size = 0.75, label.font.size = 2, max.overlaps = 20,
-    plot.title = ggplot2::waiver(), plot.subtitle = ggplot2::waiver(),
-    plot.width = 10, plot.height = 5, ...
-  ) {
+manhattan_plot.MPdata <- function(
+  x, outfn = NULL,
+  rescale = TRUE, rescale.ratio.threshold = 5, signif.rel.pos = 0.4, color.by.highlight = FALSE,
+  label.colname = NULL, x.label = "Chromosome", y.label = expression(-log[10](p)),
+  point.size = 0.75, label.font.size = 2, max.overlaps = 20,
+  plot.title = ggplot2::waiver(), plot.subtitle = ggplot2::waiver(),
+  plot.width = 10, plot.height = 5, ...
+) {
 
     if (all(!is.null(label.colname), !is.na(label.colname), na.rm = TRUE)) {
       if (!(label.colname %in% colnames(x$data))) stop("label.colname not a valid column name for the data.")
@@ -441,7 +427,6 @@ methods::setMethod(
     }
 
   }
-)
 
 #' @rdname manhattan_plot
 #'
@@ -494,9 +479,11 @@ methods::setMethod(
 #' @rdname manhattan_chromosome
 #' @export
 #'
-manhattan_chromosome <- function(x, chromosome, ...) {
-  UseMethod("manhattan_chromosome", x)
-}
+manhattan_chromosome <- function(x, ...) UseMethod("manhattan_chromosome")
+
+#' @rdname manhattan_chromosome
+#' @export
+manhattan_chromosome.default <- function(x, ...) stop("Provide a data.frame to preprocess & plot or a preprocessed MPdata object.")
 
 #' @rdname manhattan_chromosome
 #' @method manhattan_chromosome data.frame

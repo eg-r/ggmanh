@@ -51,7 +51,7 @@ test_that("Test that the function generates a warning when too many labels are s
     pos = sample(100),
     label = as.character(sample(100))
   )
-  expect_warning(p <- manhattan_plot(df, label.colname = "label"))
+  expect_warning(p <- manhattan_plot(x = df, label.colname = "label"))
 })
 
 test_that("Test that the thinPoint function subsets correctly.", {

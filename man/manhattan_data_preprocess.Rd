@@ -2,16 +2,16 @@
 % Please edit documentation in R/manhattan.R
 \name{manhattan_data_preprocess}
 \alias{manhattan_data_preprocess}
-\alias{manhattan_data_preprocess,ANY-method}
-\alias{manhattan_data_preprocess,data.frame-method}
+\alias{manhattan_data_preprocess.default}
+\alias{manhattan_data_preprocess.data.frame}
 \alias{manhattan_data_preprocess,GRanges-method}
 \title{Preprocess GWAS Result}
 \usage{
 manhattan_data_preprocess(x, ...)
 
-\S4method{manhattan_data_preprocess}{ANY}(x, ...)
+manhattan_data_preprocess.default(x, ...)
 
-\S4method{manhattan_data_preprocess}{data.frame}(
+manhattan_data_preprocess.data.frame(
   x,
   signif = c(5e-08, 1e-05),
   pval.colname = "pval",

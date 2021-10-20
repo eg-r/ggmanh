@@ -2,11 +2,14 @@
 % Please edit documentation in R/manhattan.R
 \name{manhattan_chromosome}
 \alias{manhattan_chromosome}
+\alias{manhattan_chromosome.default}
 \alias{manhattan_chromosome.data.frame}
 \alias{manhattan_chromosome.MPdata}
 \title{Chromosome Manhattan Plotting}
 \usage{
-manhattan_chromosome(x, chromosome, ...)
+manhattan_chromosome(x, ...)
+
+\method{manhattan_chromosome}{default}(x, ...)
 
 \method{manhattan_chromosome}{data.frame}(
   x,
@@ -63,9 +66,9 @@ manhattan_chromosome(x, chromosome, ...)
 \arguments{
 \item{x}{MPdata object.}
 
-\item{chromosome}{a character. A specific chromsome in \code{x} to be plotted}
-
 \item{...}{Additional arguments for chromosome manhattan plot}
+
+\item{chromosome}{a character. A specific chromsome in \code{x} to be plotted}
 
 \item{outfn}{a character. File name to save the Manhattan Plot. If \code{outfn}
 is supplied (i.e. \code{!is.null(outfn)}), then the plot is not drawn in
