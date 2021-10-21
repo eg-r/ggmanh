@@ -9,7 +9,7 @@
 #' truncating data for faster plot generation, and manual rescaling of the y-axis.
 #' The manhattan plot is generated in two steps: data preprocessing and plotting. This allows the user to iteratively
 #' customize the plot without having the process the GWAS summary data over and over again.
-#' Currently, \code{data.frame} and \code{GRanges} from \code{\link{GenomicRanges}} are supported.
+#' Currently, \code{data.frame} and \code{GRanges} from \code{GenomicRanges} are supported.
 #'
 #' A vignette detailing the usage of the package is accessible by \code{vignette("ggmanh")}
 #'
