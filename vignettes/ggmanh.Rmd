@@ -182,10 +182,12 @@ Another simple, yet useful, feature of the package is a function called `thinPoi
 
 ## Zoom into Chromosome
 
-`manhattan_chromosome` zooms into a chromosome if you are interested in a specific chromosome.
+If a value is passed to `chromosome` argument of the function `manhattan_plot` or `manhattan_data_preprocess`, then the plot zooms into a chromosome if you are interested in a specific chromosome.
+
+**NOTE:** When `chromosome` is specified, the default behavior is to turn off `thinPoints` as the default `thin.n` value may be too small and may make the plot less cluttered than it actually is. The user can manually increase `thin.n` so that the visual output is not changed dramatically while keeping the data size small.
 
 ```{r chromosome}
-manhattan_chromosome(simdata, pval.colname = "P.value", chr.colname = "chromosome", pos.colname = "position", chromosome = 5)
+manhattan_plot(simdata, chromosome = 5, pval.colname = "P.value", chr.colname = "chromosome", pos.colname = "position")
 ```
 
 # Annotation with GDS File

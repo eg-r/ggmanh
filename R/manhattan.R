@@ -61,11 +61,11 @@ manhattan_plot.default <- function(x, ...) stop("Provide a data.frame to preproc
 #' @method manhattan_plot data.frame
 #' @export
 manhattan_plot.data.frame <- function(
-  x, outfn = NULL, signif = c(5e-8, 1e-5), pval.colname = "pval", chr.colname = "chr",
+  x, chromosome = NULL, outfn = NULL, signif = c(5e-8, 1e-5), pval.colname = "pval", chr.colname = "chr",
   pos.colname = "pos", label.colname = NULL, highlight.colname = NULL, chr.order = NULL,
   signif.col = NULL, chr.col = NULL,  highlight.col = NULL,
   rescale = TRUE, rescale.ratio.threshold = 5, signif.rel.pos = 0.4, color.by.highlight = FALSE,
-  preserve.position = FALSE, thin = TRUE, thin.n = 500,
+  preserve.position = FALSE, thin = NULL, thin.n = 1000,
   plot.title = ggplot2::waiver(), plot.subtitle = ggplot2::waiver(), plot.width = 10, plot.height = 5,
   point.size = 0.75, label.font.size = 2, max.overlaps = 20,
   x.label = "Chromosome", y.label = expression(-log[10](p)), ...
@@ -73,7 +73,7 @@ manhattan_plot.data.frame <- function(
 
   # preprocess manhattan plot data
   mpdata <- manhattan_data_preprocess(
-    x, signif = signif, pval.colname = pval.colname, chr.colname = chr.colname, pos.colname = pos.colname,
+    x, chromosome = chromosome, signif = signif, pval.colname = pval.colname, chr.colname = chr.colname, pos.colname = pos.colname,
     chr.order = chr.order, signif.col = signif.col, chr.col = chr.col, highlight.colname = highlight.colname,
     highlight.col = highlight.col, preserve.position = preserve.position, thin = thin,
     thin.n = thin.n
@@ -81,7 +81,7 @@ manhattan_plot.data.frame <- function(
 
   # manhattan plot
   manhattan_plot(
-    x = mpdata, outfn = outfn, rescale = rescale, rescale.ratio.threshold = rescale.ratio.threshold,
+    x = mpdata, chromosome = NULL, outfn = outfn, rescale = rescale, rescale.ratio.threshold = rescale.ratio.threshold,
     signif.rel.pos = signif.rel.pos, color.by.highlight = color.by.highlight,
     label.colname = label.colname, x.label = x.label, y.label = y.label,
     point.size = point.size, label.font.size = label.font.size,
@@ -118,100 +118,121 @@ manhattan_plot.data.frame <- function(
 #'
 #' @export
 manhattan_plot.MPdata <- function(
-  x, outfn = NULL,
+  x, chromosome = NULL, outfn = NULL,
   rescale = TRUE, rescale.ratio.threshold = 5, signif.rel.pos = 0.4, color.by.highlight = FALSE,
   label.colname = NULL, x.label = "Chromosome", y.label = expression(-log[10](p)),
   point.size = 0.75, label.font.size = 2, max.overlaps = 20,
   plot.title = ggplot2::waiver(), plot.subtitle = ggplot2::waiver(),
   plot.width = 10, plot.height = 5, ...
 ) {
-
-    if (all(!is.null(label.colname), !is.na(label.colname), na.rm = TRUE)) {
-      if (!(label.colname %in% colnames(x$data))) stop("label.colname not a valid column name for the data.")
-      if ((sum(!is.na(x$data[[label.colname]]) & !(x$data[[label.colname]] == ""))) > 20) warning("The plot will generate > 20 labels. The plot may be cluttered & may take a longer to generate.")
-    }
-
-    # create transformation object; if rescaling is required, create the according transformation
-    trans <- list("trans" = "identity", "breaks" = ggplot2::waiver())
-    if (rescale) {
-      jump <- get_transform_jump(-log10(x$signif))
-      if ((ceiling(max(x$data[[x$pval.colname]])/5)*5)/jump > rescale.ratio.threshold) {
-        trans <- get_transform(x$data, jump, x$pval.colname, jump.rel.pos = signif.rel.pos)
-      }
-    }
-
-    ylimit <- c(0, ifelse(identical(trans$trans, "identity"), NA, max(trans$breaks)))
-
-    # choose whether to use highlight.colname or chr.colname
-    if (!is.null(x$highlight.colname) && !is.null(x$highlight.col) && color.by.highlight) {
-      point.color <- x$highlight.colname
-      point.color.map <- x$highlight.col
-    } else {
-      point.color <- x$chr.colname
-      point.color.map <- x$chr.col
-    }
-
-    # manhattan plot without labels
-    p <- ggplot2::ggplot(x$data, ggplot2::aes_string(x = x$pos.colname, y = x$pval.colname, color = point.color)) +
-      ggplot2::geom_point(size = point.size, pch = 16) +
-      ggplot2::scale_discrete_manual(aesthetics = "color", values = point.color.map) +
-      ggplot2::scale_y_continuous(
-        trans = trans$trans,
-        breaks = trans$breaks,
-        expand = c(0.02, 0.01),
-        limits = ylimit
-      ) +
-      ggplot2::scale_x_continuous(
-        name = x.label,
-        breaks = x$center_pos,
-        labels = x$chr.labels,
-        expand = c(0.01, 0.01)
-      ) +
-      ggplot2::geom_hline(
-        yintercept = -log10(x$signif),
-        linetype = 'dashed',
-        color = x$signif.col
-      ) +
-      ggplot2::theme_bw() +
-      ggplot2::theme(
-        panel.grid.major = ggplot2::element_blank(),
-        panel.grid.minor = ggplot2::element_blank(),
-        legend.position = "none"
-      ) +
-      ggplot2::ylab(y.label) +
-      ggplot2::ggtitle(label = plot.title, subtitle = plot.subtitle)
-
-    if (all(!is.null(label.colname), !is.na(label.colname), na.rm = TRUE)) {
-      p <- p + ggrepel::geom_label_repel(
-        ggplot2::aes_string(x = x$pos.colname, y = x$pval.colname, label = label.colname),
-        size = label.font.size,
-        label.padding = 0.15,
-        segment.size = 0.2,
-        min.segment.length = 0,
-        max.overlaps = max.overlaps,
-        ...
-      )
-    }
-
-    if (rescale & !identical(trans$trans, "identity")) {
-      # if the plot is rescaled, change the tick at the "jump" to double line
-      jump.tick.size <- 3.5
-
-      p <- p +
-        ggplot2::theme(
-          axis.ticks.y = ggplot2::element_line(linetype = trans$y_axis_linetype)) +
-        ggplot2::annotate(geom = "point", shape = "=", x = -Inf, y = trans$jump, size = jump.tick.size) +
-        ggplot2::coord_cartesian(clip = "off")
-    }
-
-    if (!is.null(outfn)) {
-      ggplot2::ggsave(outfn, plot=p, width=plot.width, height=plot.height, units = "in")
-      invisible()
-    } else {
-      return(p)
-    }
-
+  if (all(!is.null(label.colname), !is.na(label.colname), na.rm = TRUE)) {
+    if (!(label.colname %in% colnames(x$data))) stop("label.colname not a valid column name for the data.")
+    if ((sum(!is.na(x$data[[label.colname]]) & !(x$data[[label.colname]] == ""))) > 20) warning("The plot will generate > 20 labels. The plot may be cluttered & may take a longer to generate.")
   }
+
+  # if chromosome is specified, subset the data
+  if (!is.null(chromosome)) {
+    valid_chr(x$data, chromosome, x$chr.colname)
+    x$data <- x$data[x$data[[x$chr.colname]] == chromosome,]
+  }
+
+  # decide if the resulting plot will be single chromosome, or multiple
+  single.chr <- length(unique(x$data[[x$chr.colname]]))
+
+  # create transformation object; if rescaling is required, create appropriate transformation
+  trans <- list("trans" = "identity", "breaks" = ggplot2::waiver())
+  if (rescale) {
+    jump <- get_transform_jump(-log10(x$signif))
+    if ((ceiling(max(x$data[[x$pval.colname]])/5)*5)/jump > rescale.ratio.threshold) {
+      trans <- get_transform(x$data, jump, x$pval.colname, jump.rel.pos = signif.rel.pos)
+    }
+  }
+
+  ylimit <- c(0, ifelse(identical(trans$trans, "identity"), NA, max(trans$breaks)))
+
+  # plot parameters depend on single.chr
+  if (single.chr) {
+    pos <- x$true.pos.colname
+    x.break <- ggplot2::waiver()
+    x.break.label <- ggplot2::waiver()
+    x.limits <- NULL
+  } else {
+    pos <- x$pos.colname
+    x.break <- x$center_pos
+    x.break.label <- x$chr.labels
+    x.limits <- c(min(x$start_pos), max(x$end_pos))
+  }
+
+  # choose whether to use highlight.colname or chr.colname
+  if (!is.null(x$highlight.colname) && !is.null(x$highlight.col) && color.by.highlight) {
+    point.color <- x$highlight.colname
+    point.color.map <- x$highlight.col
+  } else {
+    point.color <- x$chr.colname
+    point.color.map <- x$chr.col
+  }
+
+  # manhattan plot without labels
+  p <- ggplot2::ggplot(x$data, ggplot2::aes_string(x = pos, y = x$pval.colname, color = point.color)) +
+    ggplot2::geom_point(size = point.size, pch = 16) +
+    ggplot2::scale_discrete_manual(aesthetics = "color", values = point.color.map) +
+    ggplot2::scale_y_continuous(
+      trans = trans$trans,
+      breaks = trans$breaks,
+      expand = c(0.02, 0.01),
+      limits = ylimit
+    ) +
+    ggplot2::scale_x_continuous(
+      name = x.label,
+      breaks = x.break,
+      labels = x.break.label,
+      expand = c(0.01, 0.01), limits = x.limits
+    ) +
+    ggplot2::geom_hline(
+      yintercept = -log10(x$signif),
+      linetype = 'dashed',
+      color = x$signif.col
+    ) +
+    ggplot2::theme_bw() +
+    ggplot2::theme(
+      panel.grid.major = ggplot2::element_blank(),
+      panel.grid.minor = ggplot2::element_blank(),
+      legend.position = "none"
+    ) +
+    ggplot2::ylab(y.label) +
+    ggplot2::ggtitle(label = plot.title, subtitle = plot.subtitle)
+
+  if (all(!is.null(label.colname), !is.na(label.colname), na.rm = TRUE)) {
+    p <- p + ggrepel::geom_label_repel(
+      ggplot2::aes_string(x = x$pos.colname, y = x$pval.colname, label = label.colname),
+      size = label.font.size,
+      label.padding = 0.15,
+      segment.size = 0.2,
+      min.segment.length = 0,
+      max.overlaps = max.overlaps,
+      ...
+    )
+  }
+
+  if (rescale & !identical(trans$trans, "identity")) {
+    # if the plot is rescaled, change the tick at the "jump" to double line
+    jump.tick.size <- 3.5
+
+    p <- p +
+      ggplot2::theme(
+        axis.ticks.y = ggplot2::element_line(linetype = trans$y_axis_linetype)) +
+      ggplot2::annotate(geom = "point", shape = "=", x = -Inf, y = trans$jump, size = jump.tick.size) +
+      ggplot2::coord_cartesian(clip = "off")
+  }
+
+  if (!is.null(outfn)) {
+    ggplot2::ggsave(outfn, plot=p, width=plot.width, height=plot.height, units = "in")
+    invisible()
+  } else {
+    return(p)
+  }
+
+}
 
 #' @rdname manhattan_plot
 #' @method manhattan_plot GRanges
@@ -219,11 +240,11 @@ manhattan_plot.MPdata <- function(
 setMethod(
   "manhattan_plot", signature = "GRanges",
   function(
-    x, outfn = NULL, signif = c(5e-8, 1e-5), pval.colname = "pval", label.colname = NULL,
+    x, chromosome = NULL, outfn = NULL, signif = c(5e-8, 1e-5), pval.colname = "pval", label.colname = NULL,
     highlight.colname = NULL, chr.order = NULL,
     signif.col = NULL, chr.col = NULL,  highlight.col = NULL,
     rescale = TRUE, rescale.ratio.threshold = 5, signif.rel.pos = 0.4, color.by.highlight = FALSE,
-    preserve.position = FALSE, thin = TRUE, thin.n = 500,
+    preserve.position = FALSE, thin = NULL, thin.n = 1000,
     plot.title = ggplot2::waiver(), plot.subtitle = ggplot2::waiver(), plot.width = 10, plot.height = 5,
     point.size = 0.75, label.font.size = 2, max.overlaps = 20,
     x.label = "Chromosome", y.label = expression(-log[10](p)), ...
@@ -239,7 +260,7 @@ setMethod(
 
     # manhattan plot
     manhattan_plot(
-      x = mpdata, outfn = outfn, rescale = rescale, rescale.ratio.threshold = rescale.ratio.threshold,
+      x = mpdata, chromosome = chromosome,outfn = outfn, rescale = rescale, rescale.ratio.threshold = rescale.ratio.threshold,
       signif.rel.pos = signif.rel.pos, color.by.highlight = color.by.highlight,
       label.colname = label.colname, x.label = x.label, y.label = y.label,
       point.size = point.size, label.font.size = label.font.size,

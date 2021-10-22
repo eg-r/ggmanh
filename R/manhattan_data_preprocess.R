@@ -59,6 +59,8 @@ manhattan_data_preprocess.default <- function(x, ...) stop("Provide a valid data
 
 #' @rdname manhattan_data_preprocess
 #' @method manhattan_data_preprocess data.frame
+#' @param chromosome a character. This is supplied if a manhattan plot of a single chromosome is
+#'   desired. If \code{NULL}, then all the chromosomes in the data will be plotted.
 #' @param signif a numeric vector. Significant p-value thresholds to be drawn for
 #'   manhattan plot. At least one value should be provided. Default value is c(5e-08, 1e-5)
 #' @param pval.colname a character. Column name of \code{x} containing p.value.
@@ -80,16 +82,17 @@ manhattan_data_preprocess.default <- function(x, ...) stop("Provide a valid data
 #' @param preserve.position a logical. If \code{TRUE}, the width of each chromosome reflect the
 #'   number of variants and the position of each variant is correctly scaled? If \code{FALSE}, the
 #'   width of each chromosome is equal and the variants are equally spaced.
-#' @param thin a logical. Reduce number of data points when they are cluttered?
+#' @param thin a logical. If \code{TRUE}, \code{thinPoints} will be applied. Defaults to \code{TRUE} if
+#'   \code{chromosome} is \code{NULL}. Defaults to \code{FALSE} if \code{chromosome} is supplied.
 #' @param thin.n an integer. Number of max points per horizontal partitions of the plot.
-#'   Defaults to 500.
+#'   Defaults to 1000.
 #' @importFrom ggplot2 waiver
 #' @export
 manhattan_data_preprocess.data.frame <- function(
-  x, signif = c(5e-8, 1e-5), pval.colname = "pval",
+  x, chromosome = NULL, signif = c(5e-8, 1e-5), pval.colname = "pval",
   chr.colname = "chr", pos.colname = "pos", highlight.colname = NULL, chr.order = NULL,
-  signif.col = NULL, chr.col = NULL, highlight.col = NULL, preserve.position = FALSE, thin = TRUE,
-  thin.n = 500
+  signif.col = NULL, chr.col = NULL, highlight.col = NULL, preserve.position = FALSE, thin = NULL,
+  thin.n = 1000
 ) {
 
   # what manhattan preprocess does:
@@ -100,14 +103,21 @@ manhattan_data_preprocess.data.frame <- function(
 
   # run checks on several arguments
   preprocess_arg_check_out <- preprocess_arg_check(
-    x =x, signif = signif, signif.col = signif.col,
+    x = x, chromosome = chromosome, signif = signif, signif.col = signif.col,
     pval.colname = pval.colname, chr.colname = chr.colname,
     pos.colname = pos.colname, preserve.position = preserve.position)
+
+  thin <- set_thin_logical(thin, chromosome)
 
   # remove any results with missing chr, pos, or pval
   x <- remove_na(x, chr.colname, pos.colname, pval.colname)
   x[[pval.colname]] <- replace_0_pval(x[[pval.colname]])
   signif.col <- preprocess_arg_check_out$signif.col
+
+  # subset by chromosome if chromosome is specified
+  if (!is.null(chromosome)) {
+    x <- x[x[[chr.colname]] == chromosome,]
+  }
 
   # factorize chromosome column to set order of chromosomes for the plot
   if (!is.null(chr.order)) {
@@ -196,9 +206,9 @@ manhattan_data_preprocess.data.frame <- function(
 setMethod(
   "manhattan_data_preprocess", signature = "GRanges",
   function(
-    x, signif = c(5e-8, 1e-5), pval.colname = "pval", highlight.colname = NULL, chr.order = NULL,
-    signif.col = NULL, chr.col = NULL, highlight.col = NULL, preserve.position = FALSE, thin = TRUE,
-    thin.n = 500
+    x, chromosome = NULL, signif = c(5e-8, 1e-5), pval.colname = "pval", highlight.colname = NULL, chr.order = NULL,
+    signif.col = NULL, chr.col = NULL, highlight.col = NULL, preserve.position = FALSE, thin = NULL,
+    thin.n = 100
   ) {
     grdat <- as.data.frame(x)
     grdat$pos <- (grdat$start + grdat$end) %/% 2
@@ -207,7 +217,7 @@ setMethod(
     pos.colname <- "pos"
 
     manhattan_data_preprocess(
-      grdat, signif = signif, pval.colname = pval.colname,
+      grdat, chromosome = chromosome, signif = signif, pval.colname = pval.colname,
       chr.colname = chr.colname, pos.colname = pos.colname, highlight.colname = highlight.colname, chr.order = chr.order,
       signif.col = signif.col, chr.col = chr.col, highlight.col = highlight.col, preserve.position = preserve.position, thin = thin,
       thin.n = thin.n

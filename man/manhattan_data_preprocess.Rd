@@ -13,6 +13,7 @@ manhattan_data_preprocess(x, ...)
 
 \method{manhattan_data_preprocess}{data.frame}(
   x,
+  chromosome = NULL,
   signif = c(5e-08, 1e-05),
   pval.colname = "pval",
   chr.colname = "chr",
@@ -23,12 +24,13 @@ manhattan_data_preprocess(x, ...)
   chr.col = NULL,
   highlight.col = NULL,
   preserve.position = FALSE,
-  thin = TRUE,
-  thin.n = 500
+  thin = NULL,
+  thin.n = 1000
 )
 
 \S4method{manhattan_data_preprocess}{GRanges}(
   x,
+  chromosome = NULL,
   signif = c(5e-08, 1e-05),
   pval.colname = "pval",
   highlight.colname = NULL,
@@ -37,8 +39,8 @@ manhattan_data_preprocess(x, ...)
   chr.col = NULL,
   highlight.col = NULL,
   preserve.position = FALSE,
-  thin = TRUE,
-  thin.n = 500
+  thin = NULL,
+  thin.n = 100
 )
 }
 \arguments{
@@ -46,6 +48,9 @@ manhattan_data_preprocess(x, ...)
 At bare minimum, it should contain chromosome, position, and p-value.}
 
 \item{...}{Additional arguments for manhattan_data_preprocess.}
+
+\item{chromosome}{a character. This is supplied if a manhattan plot of a single chromosome is
+desired. If \code{NULL}, then all the chromosomes in the data will be plotted.}
 
 \item{signif}{a numeric vector. Significant p-value thresholds to be drawn for
 manhattan plot. At least one value should be provided. Default value is c(5e-08, 1e-5)}
@@ -78,10 +83,11 @@ colors are applied using \code{RColorBrewer}.}
 number of variants and the position of each variant is correctly scaled? If \code{FALSE}, the
 width of each chromosome is equal and the variants are equally spaced.}
 
-\item{thin}{a logical. Reduce number of data points when they are cluttered?}
+\item{thin}{a logical. If \code{TRUE}, \code{thinPoints} will be applied. Defaults to \code{TRUE} if
+\code{chromosome} is \code{NULL}. Defaults to \code{FALSE} if \code{chromosome} is supplied.}
 
 \item{thin.n}{an integer. Number of max points per horizontal partitions of the plot.
-Defaults to 500.}
+Defaults to 1000.}
 }
 \value{
 a MPdata object. This object contains all the necessary info for constructing

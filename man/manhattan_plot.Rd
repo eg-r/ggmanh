@@ -14,6 +14,7 @@ manhattan_plot.default(x, ...)
 
 \method{manhattan_plot}{data.frame}(
   x,
+  chromosome = NULL,
   outfn = NULL,
   signif = c(5e-08, 1e-05),
   pval.colname = "pval",
@@ -30,8 +31,8 @@ manhattan_plot.default(x, ...)
   signif.rel.pos = 0.4,
   color.by.highlight = FALSE,
   preserve.position = FALSE,
-  thin = TRUE,
-  thin.n = 500,
+  thin = NULL,
+  thin.n = 1000,
   plot.title = ggplot2::waiver(),
   plot.subtitle = ggplot2::waiver(),
   plot.width = 10,
@@ -46,6 +47,7 @@ manhattan_plot.default(x, ...)
 
 \method{manhattan_plot}{MPdata}(
   x,
+  chromosome = NULL,
   outfn = NULL,
   rescale = TRUE,
   rescale.ratio.threshold = 5,
@@ -66,6 +68,7 @@ manhattan_plot.default(x, ...)
 
 \S4method{manhattan_plot}{GRanges}(
   x,
+  chromosome = NULL,
   outfn = NULL,
   signif = c(5e-08, 1e-05),
   pval.colname = "pval",
@@ -80,8 +83,8 @@ manhattan_plot.default(x, ...)
   signif.rel.pos = 0.4,
   color.by.highlight = FALSE,
   preserve.position = FALSE,
-  thin = TRUE,
-  thin.n = 500,
+  thin = NULL,
+  thin.n = 1000,
   plot.title = ggplot2::waiver(),
   plot.subtitle = ggplot2::waiver(),
   plot.width = 10,
@@ -99,6 +102,9 @@ manhattan_plot.default(x, ...)
 \code{tibble}), or an \code{MPdata} object.}
 
 \item{...}{additional arguments to be passed onto \code{geom_label_repel}}
+
+\item{chromosome}{a character. This is supplied if a manhattan plot of a single chromosome is
+desired. If \code{NULL}, then all the chromosomes in the data will be plotted.}
 
 \item{outfn}{a character. File name to save the Manhattan Plot. If \code{outfn}
 is supplied (i.e. \code{!is.null(outfn)}), then the plot is not drawn in
@@ -148,10 +154,11 @@ where should the significance threshold be positioned?}
 number of variants and the position of each variant is correctly scaled? If \code{FALSE}, the
 width of each chromosome is equal and the variants are equally spaced.}
 
-\item{thin}{a logical. Reduce number of data points when they are cluttered?}
+\item{thin}{a logical. If \code{TRUE}, \code{thinPoints} will be applied. Defaults to \code{TRUE} if
+\code{chromosome} is \code{NULL}. Defaults to \code{FALSE} if \code{chromosome} is supplied.}
 
 \item{thin.n}{an integer. Number of max points per horizontal partitions of the plot.
-Defaults to 500.}
+Defaults to 1000.}
 
 \item{plot.title}{a character. Plot title}
 

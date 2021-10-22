@@ -1,6 +1,6 @@
 # check preprocessing arguments
 preprocess_arg_check <- function(
-  x, signif, signif.col, pval.colname, chr.colname, pos.colname, preserve.position
+  x, chromosome, signif, signif.col, pval.colname, chr.colname, pos.colname, preserve.position
 ) {
   preprocess_checklist <- list(signif.col = NULL)
   # check significance cutoff exists
@@ -13,7 +13,7 @@ preprocess_arg_check <- function(
   if (is.null(signif.col)) {
     preprocess_checklist$signif.col <- rep("grey", length(signif))
     preprocess_checklist$signif.col[which.max(-log10(signif))] <- "black"
-  } else if (!all(valid_colors)) {
+  } else if (!all(valid_colors(signif.col))) {
     warning("invalid signif.col colors... using default colors.")
     preprocess_checklist$signif.col <- rep("grey", length(signif))
     preprocess_checklist$signif.col[which.max(-log10(signif))] <- "black"
@@ -31,8 +31,13 @@ preprocess_arg_check <- function(
     stop("Choose a different name for pvalue column name.")
   }
 
-  if (any(x[[pval.colname]] < 0, na.rm = TRUE) | any(x[[pval.colname]] > 1, na.rm = TRUE)) stop("p.value is a probability between 0 and 1.")
+  # check that the supplied chromosomes exist
+  if (!is.null(chromosome)) {
+    valid_chr(x, chromosome, chr.colname)
+  }
 
+  # check that the values in p-value column are valid
+  if (any(x[[pval.colname]] < 0, na.rm = TRUE) | any(x[[pval.colname]] > 1, na.rm = TRUE)) stop("p.value is a probability between 0 and 1.")
 
   # check that column names are valid
   if (!is.numeric(x[[pval.colname]])) stop(pval.colname, " should be a numeric column.")
@@ -48,6 +53,13 @@ preprocess_arg_check <- function(
   return(preprocess_checklist)
 }
 
+# check valid chromosome argument
+valid_chr <- function(x, chromosome, chr.colname) {
+  if (length(chromosome) != 1) stop("Only 1 chromosome should be specified")
+  if (!(chromosome %in% x[[chr.colname]])) stop("The supplied chromosome does not exist.")
+  invisible()
+}
+
 # remove entries where position, chromosome, or pvalue is missing
 remove_na <- function(x, chr.colname, pos.colname, pval.colname) {
   na_remove <- which(is.na(x[[chr.colname]]) | is.na(x[[pos.colname]]) | is.na(x[[pval.colname]]))
@@ -59,6 +71,17 @@ remove_na <- function(x, chr.colname, pos.colname, pval.colname) {
     stop("Empty rows after omitting missing chromosome/position/pvalue.\n")
   }
   return(x)
+}
+
+set_thin_logical <- function(thin, chromosome) {
+  if (is.null(thin)) {
+    if (is.null(chromosome)) {
+      return(TRUE)
+    } else {
+      return(FALSE)
+    }
+  }
+  return(thin)
 }
 
 # TEMPORARY: replace entries where p-value is zero with the minimum
