@@ -137,7 +137,7 @@ manhattan_plot.MPdata <- function(
   }
 
   # decide if the resulting plot will be single chromosome, or multiple
-  single.chr <- length(unique(x$data[[x$chr.colname]]))
+  single.chr <- length(unique(x$data[[x$chr.colname]])) == 1
 
   # create transformation object; if rescaling is required, create appropriate transformation
   trans <- list("trans" = "identity", "breaks" = ggplot2::waiver())

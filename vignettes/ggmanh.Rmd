@@ -1,13 +1,15 @@
 ---
 title: "Guide to ggmanh Package"
-output: BiocStyle::html_document
 package: ggmanh
 vignette: >
     %\VignetteIndexEntry{Guide to ggmanh Package}
     %\VignetteEngine{knitr::rmarkdown}
-    %\VignetteEncoding{UTF-8}  
-toc: true
-toc_float: true
+    %\VignettePackage{ggmanh}
+    %\VignetteEncoding{UTF-8}
+output: 
+  BiocStyle::html_document:
+    toc: true
+    toc_float: true
 ---
 
 # Introduction
