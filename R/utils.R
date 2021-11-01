@@ -2,7 +2,7 @@
 preprocess_arg_check <- function(
   x, chromosome, signif, signif.col, pval.colname, chr.colname, pos.colname, preserve.position
 ) {
-  preprocess_checklist <- list(signif.col = NULL)
+  preprocess_checklist <- list(signif.col = signif.col)
   # check significance cutoff exists
   if (length(signif) < 1) stop("At least one significance threshold should be provided.")
 
@@ -17,6 +17,14 @@ preprocess_arg_check <- function(
     warning("invalid signif.col colors... using default colors.")
     preprocess_checklist$signif.col <- rep("grey", length(signif))
     preprocess_checklist$signif.col[which.max(-log10(signif))] <- "black"
+  } else if (length(signif) != length(signif.col)) {
+    warning("Length of signif and signif.col do not match.")
+    if (length(signif.col) > length(signif)) {
+      signif.col <- signif.col[1:length(signif)]
+    } else {
+      signif.col <- rep(signif.col, length.out = length(signif))
+    }
+    preprocess_checklist$signif.col <- signif.col
   }
 
   # check that the supplied column names exist
