@@ -82,8 +82,8 @@ qqunif <- function(
       panel.grid.minor = ggplot2::element_blank(),
       legend.position = "none"
     ) +
-    ggplot2::ylab(expression(paste(Expected, " ", -Log[10], "(pval)"))) +
-    ggplot2::xlab(expression(paste(Observed, " ", -Log[10], "(pval)"))) +
+    ggplot2::xlab(expression(paste(Expected, " ", -Log[10], "(pval)"))) +
+    ggplot2::ylab(expression(paste(Observed, " ", -Log[10], "(pval)"))) +
     ggplot2::ggtitle(qqtitle)
 
   if (!is.null(outfn)) {
