@@ -204,7 +204,7 @@ manhattan_plot.MPdata <- function(
 
   if (all(!is.null(label.colname), !is.na(label.colname), na.rm = TRUE)) {
     p <- p + ggrepel::geom_label_repel(
-      ggplot2::aes_string(x = x$pos.colname, y = x$pval.colname, label = label.colname),
+      ggplot2::aes_string(x = pos, y = x$pval.colname, label = label.colname),
       size = label.font.size,
       label.padding = 0.15,
       segment.size = 0.2,
