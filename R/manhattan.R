@@ -173,7 +173,7 @@ manhattan_plot.MPdata <- function(
   }
 
   # manhattan plot without labels
-  p <- ggplot2::ggplot(x$data, ggplot2::aes_string(x = pos, y = x$pval.colname, color = point.color)) +
+  p <- ggplot2::ggplot(x$data, ggplot2::aes(x = !!rlang::sym(pos), y = !!rlang::sym(x$pval.colname), color = !!rlang::sym(point.color))) +
     ggplot2::geom_point(size = point.size, pch = 16) +
     ggplot2::scale_discrete_manual(aesthetics = "color", values = point.color.map) +
     ggplot2::scale_y_continuous(
@@ -204,7 +204,7 @@ manhattan_plot.MPdata <- function(
 
   if (all(!is.null(label.colname), !is.na(label.colname), na.rm = TRUE)) {
     p <- p + ggrepel::geom_label_repel(
-      ggplot2::aes_string(x = pos, y = x$pval.colname, label = label.colname),
+      ggplot2::aes(x = !!rlang::sym(pos), y = !!rlang::sym(x$pval.colname), label = !!rlang::sym(label.colname)),
       size = label.font.size,
       label.padding = 0.15,
       segment.size = 0.2,
