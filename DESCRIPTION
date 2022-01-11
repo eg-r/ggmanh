@@ -1,12 +1,12 @@
 Package: ggmanh
 Title: Visualization Tool for GWAS Result
-Version: 0.99.11
+Version: 0.99.12
 Authors@R: c(
         person(given = "John", family = "Lee", role = c("aut", "cre"), email = "john.lee@abbvie.com"),
         person(given = "Xiuwen", family = "Zheng", role = c("ctb", "dtc"), email = "xiuwen.zheng@abbvie.com")
     )
 Description: Manhattan plot and QQ Plot are commonly used to visualize the end result of Genome Wide Association Study.
-    The "GWASplots" package aims to keep the generation of these plots simple while maintaining customizability.
+    The "ggmanh" package aims to keep the generation of these plots simple while maintaining customizability.
     Main functions include manhattan_plot, qqunif, and thinPoints.
 biocViews: Visualization, GenomeWideAssociation, Genetics
 License: MIT + file LICENSE
