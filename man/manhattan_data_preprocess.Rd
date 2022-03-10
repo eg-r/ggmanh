@@ -123,7 +123,6 @@ with different graphic options, you have the choice to preprocess separately and
 then generate plots.
 }
 \examples{
-library(dplyr)
 
 gwasdat <- data.frame(
   "chromosome" = rep(1:5, each = 30),

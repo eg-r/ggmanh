@@ -15,12 +15,10 @@
 #'
 #' @return a \code{data.frame}
 #'
-#' @importFrom magrittr %>%
 #' @importFrom rlang .data
 #' @export
 #'
 #' @examples
-#' library(dplyr)
 #' dat <- data.frame(
 #'    A1 = c(1:20, 20, 20),
 #'    A2 = c(rep(1, 12), rep(1,5), rep(20, 3), 20, 20) ,
@@ -41,15 +39,16 @@ thinPoints <- function(dat, value, n=3000, nbins=200, groupBy=NULL)
 
   if (!is.null(groupBy))
   {
-    if (!is.character(groupBy) || (length(groupBy) != 1)) stop("groupBy should be a string.")
-    dat <- dplyr::group_by(dat, .data[[groupBy]])
+    if (!is.character(groupBy) || (length(groupBy) != 1) || !(groupBy %in% colnames(dat))) {
+      stop("groupBy should be a character.")
+    }
+    group <- integer(nrow(dat))
+    group[order(dat[[groupBy]])] <- unlist(tapply(dat[[value]], dat[[groupBy]], function(x) cut(x, breaks = nbins, labels = FALSE)))
+    group <- interaction(dat[[groupBy]], group)
+  } else {
+    group <- factor(cut(dat[[value]], breaks = nbins, labels = FALSE))
   }
 
-  dat %>%
-    dplyr::mutate(bin = cut(.data[[value]], breaks = nbins, labels = FALSE)) %>%
-    dplyr::group_by(.data[["bin"]], .add=TRUE) %>%
-    dplyr::slice_sample(n = n, replace = FALSE) %>%
-    dplyr::ungroup() %>% # undo all grouping
-    dplyr::select(-.data[["bin"]])
-
+  indices <- unlist(tapply(1:nrow(dat), group, FUN = function(x) sample_vec(x, n)), use.names = FALSE)
+  dat[indices,]
 }

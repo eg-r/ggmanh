@@ -204,7 +204,6 @@ labels will clutter up the plot. For those points with no annotation, you have t
 choice to set them as \code{NA} or \code{""}.
 }
 \examples{
-library(dplyr)
 
 gwasdat <- data.frame(
   "chromosome" = rep(1:5, each = 30),

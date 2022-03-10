@@ -263,3 +263,14 @@ concat_df_cols <- function(df, concat_char = "/") {
 gds_node_exists <- function(gds, nodes) {
   all(nodes %in% gdsfmt::ls.gdsn(gds, recursive = TRUE))
 }
+
+# sample from a vector iff the number to sample from is below the length of x
+sample_vec <- function(x, n) {
+  if (length(x) == 1) {
+    return(x)
+  } else if (length(x) <= n) {
+    return(x)
+  } else {
+    return(sample(x, size = n, replace = FALSE))
+  }
+}

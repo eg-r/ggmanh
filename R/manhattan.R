@@ -29,7 +29,6 @@
 #' @return \code{gg} object if \code{is.null(outfn)}, \code{NULL} if \code{!is.null(outf)}
 #'
 #' @examples
-#' library(dplyr)
 #'
 #' gwasdat <- data.frame(
 #'   "chromosome" = rep(1:5, each = 30),

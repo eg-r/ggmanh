@@ -52,7 +52,6 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(ggmanh)
 library(SeqArray)
-library(dplyr)
 ```
 
 First, create a simulated data to be used for demonstration.

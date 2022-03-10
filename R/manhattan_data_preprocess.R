@@ -36,7 +36,6 @@
 #'   a manhattan plot.
 #'
 #' @examples
-#' library(dplyr)
 #'
 #' gwasdat <- data.frame(
 #'   "chromosome" = rep(1:5, each = 30),

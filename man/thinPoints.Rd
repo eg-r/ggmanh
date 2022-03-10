@@ -30,7 +30,6 @@ to plot while making almost no difference. This function reduces the number of p
 by a numberic column \code{value} into \code{nbins} and sampling \code{n} points.
 }
 \examples{
-library(dplyr)
 dat <- data.frame(
    A1 = c(1:20, 20, 20),
    A2 = c(rep(1, 12), rep(1,5), rep(20, 3), 20, 20) ,
