@@ -39,8 +39,10 @@ thinPoints <- function(dat, value, n=3000, nbins=200, groupBy=NULL)
 
   if (!is.null(groupBy))
   {
-    if (!is.character(groupBy) || (length(groupBy) != 1) || !(groupBy %in% colnames(dat))) {
+    if (!is.character(groupBy) || (length(groupBy) != 1)) {
       stop("groupBy should be a character.")
+    } else if (!(groupBy %in% colnames(dat))) {
+      stop(sprintf("Column %s does not exist in dat.", groupBy))
     }
     group <- integer(nrow(dat))
     group[order(dat[[groupBy]])] <- unlist(tapply(dat[[value]], dat[[groupBy]], function(x) cut(x, breaks = nbins, labels = FALSE)))
