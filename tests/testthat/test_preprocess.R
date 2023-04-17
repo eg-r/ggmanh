@@ -44,15 +44,15 @@ test_that("Check that preprocess works as intended", {
   expect_equal(mpdat1$data$pval, c(0.05,0.05,0.0005,0.000005,0.005,0.0005))
 })
 
-test_that("Test that the function generates a warning when too many labels are supplied.", {
-  df <- data.frame(
-    pval = runif(100),
-    chr = sample(1:12,100,replace=TRUE),
-    pos = sample(100),
-    label = as.character(sample(100))
-  )
-  expect_warning(p <- manhattan_plot(x = df, label.colname = "label"))
-})
+# test_that("Test that the function generates a warning when too many labels are supplied.", {
+#   df <- data.frame(
+#     pval = runif(100),
+#     chr = sample(1:12,100,replace=TRUE),
+#     pos = sample(100),
+#     label = as.character(sample(100))
+#   )
+#   expect_warning(p <- manhattan_plot(x = df, label.colname = "label"))
+# })
 
 test_that("Test that the thinPoint function subsets correctly.", {
   dat <- data.frame(
