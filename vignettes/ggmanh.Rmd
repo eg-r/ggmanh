@@ -19,7 +19,7 @@ The package `ggmanh` is aimed to provide easy and direct access to visualisation
 Manhattan plot is commonly used to display significant Single Nucleotide Polymorphisms (SNPs) in Genome Wide Association Study (GWAS). The x-axis is divided into chromosomes, and SNPs are plotted in their respective positions. The y-axis typically represents $-10*log(p value)$. Majority of the points have low y-values, with some of the significant SNPs having high y-values. It is not uncommon to see strong association between SNPs and a phenotype, yielding a high y-value. This results in a wide y-scales in which SNPs with lower significance are squished. 
 
 This function addresses this problem by rescaling the y-axis according to the range of y.
-There are more features, such as labelling without overlap (with the help of [ggprepel package](https://ggrepel.slowkow.com)), reflecting the size of chromosomes along the x-axis, and displaying significant lines.
+There are more features, such as labelling without overlap (with the help of [ggrepel package](https://ggrepel.slowkow.com)), reflecting the size of chromosomes along the x-axis, and displaying significant lines.
 
 The package can be installed by:
 
