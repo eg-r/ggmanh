@@ -61,7 +61,7 @@ manhattan_plot.default <- function(x, ...) stop("Provide a data.frame to preproc
 #' @export
 manhattan_plot.data.frame <- function(
   x, chromosome = NULL, outfn = NULL, signif = c(5e-8, 1e-5), pval.colname = "pval", chr.colname = "chr",
-  pos.colname = "pos", label.colname = NULL, highlight.colname = NULL, chr.order = NULL,
+  pos.colname = "pos", label.colname = NULL, highlight.colname = NULL, pval.log = TRUE, chr.order = NULL,
   signif.col = NULL, chr.col = NULL,  highlight.col = NULL,
   rescale = TRUE, rescale.ratio.threshold = 5, signif.rel.pos = 0.4, color.by.highlight = FALSE,
   preserve.position = FALSE, thin = NULL, thin.n = 1000,
@@ -240,7 +240,7 @@ setMethod(
   "manhattan_plot", signature = "GRanges",
   function(
     x, chromosome = NULL, outfn = NULL, signif = c(5e-8, 1e-5), pval.colname = "pval", label.colname = NULL,
-    highlight.colname = NULL, chr.order = NULL,
+    highlight.colname = NULL, pval.log = TRUE, chr.order = NULL,
     signif.col = NULL, chr.col = NULL,  highlight.col = NULL,
     rescale = TRUE, rescale.ratio.threshold = 5, signif.rel.pos = 0.4, color.by.highlight = FALSE,
     preserve.position = FALSE, thin = NULL, thin.n = 1000,
@@ -251,7 +251,7 @@ setMethod(
 
     # preprocess manhattan plot data
     mpdata <- manhattan_data_preprocess(
-      x, signif = signif, pval.colname = pval.colname, chr.order = chr.order,
+      x, signif = signif, pval.colname = pval.colname, pval.log = pval.log, chr.order = chr.order,
       signif.col = signif.col, chr.col = chr.col, highlight.colname = highlight.colname,
       highlight.col = highlight.col, preserve.position = preserve.position, thin = thin,
       thin.n
