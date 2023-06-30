@@ -13,6 +13,7 @@
 #' @param zero.pval a character. Determine how to treat 0 pvals.
 #' "replace" will replace the p-value of zero with the non-zero minimum.
 #' "remove" will remove the p-value of zero.
+#' @param pval.log a logical. If \code{FALSE}, p-values will assumed to already be log10-transformed, otherwise they will be converted. Default is \code{TRUE}.
 #'
 #' @return a ggplot object
 #'
@@ -23,7 +24,7 @@
 qqunif <- function(
   x, outfn = NULL, conf.int = 0.95,
   plot.width = 5, plot.height = 5, thin = TRUE, thin.n = 500,
-  zero.pval = "replace"
+  zero.pval = "replace", pval.log = TRUE
 ) {
 
   if (!is.atomic(x) || !is.numeric(x)) stop("x should be a numeric vector.")
@@ -38,9 +39,9 @@ qqunif <- function(
   if (!(is.numeric(thin.n) && length(thin.n) == 1)) stop("thin.n should be an integer of length 1.")
 
   if (zero.pval == "replace") {
-    x <- replace_0_pval(x)
+    x <- replace_0_pval(x, pval.log = pval.log)
   } else if (zero.pval == "remove") {
-    x <- remove_0_pval(x)
+    x <- remove_0_pval(x, pval.log = pval.log)
   } else {
     stop("zero.pval should be \"replace\" or \"remove\"")
   }
@@ -48,7 +49,7 @@ qqunif <- function(
   x <- sort(x)
   N <- length(x)
   q <- 1:N / N
-  qqdf <- data.frame(obs = -log10(x), exp = -log10(q))
+  qqdf <- data.frame(obs = ifelse(pval.log, -log10(x), x), exp = -log10(q))
   if (thin) {
     qqdf <- thinPoints(qqdf, value = "obs", n = thin.n)
   }

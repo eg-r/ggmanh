@@ -65,6 +65,7 @@ manhattan_data_preprocess.default <- function(x, ...) stop("Provide a valid data
 #' @param pval.colname a character. Column name of \code{x} containing p.value.
 #' @param chr.colname a character. Column name of \code{x} containing chromosome number.
 #' @param pos.colname a character. Column name of \code{x} containing position.
+#' @param pval.log a logical. If \code{FALSE}, p-values will assumed to already be log10-transformed, otherwise they will be converted. Default is \code{TRUE}.
 #' @param chr.order a character vector. Order of chromosomes presented in manhattan plot.
 #' @param signif.col a character vector of equal length as \code{signif}. It contains
 #'   colors for the lines drawn at \code{signif}. If \code{NULL}, the smallest value is colored
@@ -110,7 +111,7 @@ manhattan_data_preprocess.data.frame <- function(
 
   # remove any results with missing chr, pos, or pval
   x <- remove_na(x, chr.colname, pos.colname, pval.colname)
-  x[[pval.colname]] <- replace_0_pval(x[[pval.colname]])
+  x[[pval.colname]] <- replace_0_pval(x[[pval.colname]], pval.log)
   signif.col <- preprocess_arg_check_out$signif.col
 
   # subset by chromosome if chromosome is specified

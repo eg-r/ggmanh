@@ -95,8 +95,8 @@ set_thin_logical <- function(thin, chromosome) {
 }
 
 # TEMPORARY: replace entries where p-value is zero with the minimum
-# used by manhattan data preprocess andqqunif
-replace_0_pval <- function(x) {
+# used by manhattan data preprocess and qqunif
+replace_0_pval <- function(x, pval.log) {
 if (pval.log) {
   zero_pval <- which(x == 0)
   if (length(zero_pval) > 0) {
@@ -114,7 +114,7 @@ if (pval.log) {
 }
 
 # remove entries where p-value is zero
-remove_0_pval <- function(x) {
+remove_0_pval <- function(x, pval.log) {
 if (pval.log) {
   zero_pval <- which(x == 0)
   if (length(zero_pval) > 0) {

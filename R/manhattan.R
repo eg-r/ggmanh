@@ -72,7 +72,7 @@ manhattan_plot.data.frame <- function(
 
   # preprocess manhattan plot data
   mpdata <- manhattan_data_preprocess(
-    x, chromosome = chromosome, signif = signif, pval.colname = pval.colname, chr.colname = chr.colname, pos.colname = pos.colname,
+    x, chromosome = chromosome, signif = signif, pval.colname = pval.colname, chr.colname = chr.colname, pos.colname = pos.colname, pval.log = pval.log,
     chr.order = chr.order, signif.col = signif.col, chr.col = chr.col, highlight.colname = highlight.colname,
     highlight.col = highlight.col, preserve.position = preserve.position, thin = thin,
     thin.n = thin.n

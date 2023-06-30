@@ -16,6 +16,7 @@ manhattan_data_preprocess(x, ...)
   chromosome = NULL,
   signif = c(5e-08, 1e-05),
   pval.colname = "pval",
+  pval.log = TRUE,
   chr.colname = "chr",
   pos.colname = "pos",
   highlight.colname = NULL,
@@ -33,6 +34,7 @@ manhattan_data_preprocess(x, ...)
   chromosome = NULL,
   signif = c(5e-08, 1e-05),
   pval.colname = "pval",
+  pval.log = TRUE,
   highlight.colname = NULL,
   chr.order = NULL,
   signif.col = NULL,
@@ -56,6 +58,8 @@ desired. If \code{NULL}, then all the chromosomes in the data will be plotted.}
 manhattan plot. At least one value should be provided. Default value is c(5e-08, 1e-5)}
 
 \item{pval.colname}{a character. Column name of \code{x} containing p.value.}
+
+\item{pval.log}{a logical. If \code{FALSE}, p-values will assumed to already be log10-transformed, otherwise they will be converted. Default is \code{TRUE}.}
 
 \item{chr.colname}{a character. Column name of \code{x} containing chromosome number.}
 

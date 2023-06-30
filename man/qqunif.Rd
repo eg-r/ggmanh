@@ -12,7 +12,8 @@ qqunif(
   plot.height = 5,
   thin = TRUE,
   thin.n = 500,
-  zero.pval = "replace"
+  zero.pval = "replace",
+  pval.log = TRUE
 )
 }
 \arguments{
@@ -36,6 +37,8 @@ Defaults to 500.}
 \item{zero.pval}{a character. Determine how to treat 0 pvals.
 "replace" will replace the p-value of zero with the non-zero minimum.
 "remove" will remove the p-value of zero.}
+
+\item{pval.log}{a logical. If \code{FALSE}, p-values will assumed to already be log10-transformed, otherwise they will be converted. Default is \code{TRUE}.}
 }
 \value{
 a ggplot object

@@ -75,6 +75,7 @@ manhattan_plot.default(x, ...)
   pval.colname = "pval",
   label.colname = NULL,
   highlight.colname = NULL,
+  pval.log = TRUE,
   chr.order = NULL,
   signif.col = NULL,
   chr.col = NULL,
@@ -128,8 +129,7 @@ to be used for labelling.}
 category in this column, and provide the color mapping in \code{highlight.col}.
 Ignored if \code{NULL}.}
 
-\item{pval.log}{a logical. If \code{FALSE}, p-values will assumed to already be log10-transformed, 
-otherwise they will be converted. Defauls it \code{TRUE}.}
+\item{pval.log}{a logical. If \code{FALSE}, p-values will assumed to already be log10-transformed, otherwise they will be converted. Default is \code{TRUE}.}
 
 \item{chr.order}{a character vector. Order of chromosomes presented in manhattan plot.}
 
