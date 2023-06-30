@@ -1,6 +1,6 @@
 # check preprocessing arguments
 preprocess_arg_check <- function(
-  x, chromosome, signif, signif.col, pval.colname, chr.colname, pos.colname, preserve.position
+  x, chromosome, signif, signif.col, pval.colname, chr.colname, pos.colname, pval.log, preserve.position
 ) {
   preprocess_checklist <- list(signif.col = signif.col)
   # check significance cutoff exists
@@ -45,14 +45,16 @@ preprocess_arg_check <- function(
   }
 
   # check that the values in p-value column are valid
-  if (any(x[[pval.colname]] < 0, na.rm = TRUE) | any(x[[pval.colname]] > 1, na.rm = TRUE)) stop("p.value is a probability between 0 and 1.")
-
+  if (pval.log) {
+    if (any(x[[pval.colname]] < 0, na.rm = TRUE) | any(x[[pval.colname]] > 1, na.rm = TRUE)) stop("p.value is a probability between 0 and 1.")
+  }
+  
   # check that column names are valid
   if (!is.numeric(x[[pval.colname]])) stop(pval.colname, " should be a numeric column.")
   if (!is.numeric(x[[pos.colname]])) stop(pos.colname, " should be a numeric column.")
 
   # check that values in p value column are correct
-  if (any(x[[pval.colname]] < 0, na.rm = TRUE) | any(x[[pval.colname]] > 1, na.rm = TRUE)) stop("p.value is a probability between 0 and 1.")
+  # if (any(x[[pval.colname]] < 0, na.rm = TRUE) | any(x[[pval.colname]] > 1, na.rm = TRUE)) stop("p.value is a probability between 0 and 1.")
 
   if (length(preserve.position) != 1 | !is.logical(preserve.position)) {
     stop("preserve.position should be TRUE or FALSE.")
@@ -95,20 +97,36 @@ set_thin_logical <- function(thin, chromosome) {
 # TEMPORARY: replace entries where p-value is zero with the minimum
 # used by manhattan data preprocess andqqunif
 replace_0_pval <- function(x) {
+if (pval.log) {
   zero_pval <- which(x == 0)
   if (length(zero_pval) > 0) {
     warning("Replacing p-value of 0 with the minimum.")
     x[zero_pval] <- min(x[-zero_pval], na.rm = TRUE)
+   }
+  } else {
+  inf_pval <- which(x == Inf)
+  if (length(inf_pval) > 0) {
+    warning("Replacing p-value of Inf with the maximum.")
+    x[inf_pval] <- max(x[-inf_pval], na.rm = TRUE)
+   }
   }
   return(x)
 }
 
 # remove entries where p-value is zero
 remove_0_pval <- function(x) {
+if (pval.log) {
   zero_pval <- which(x == 0)
   if (length(zero_pval) > 0) {
     warning("Removing p-value of 0.")
     x <- x[-zero_pval]
+   }
+  } else {
+  inf_pval <- which(x == Inf)
+  if (length(inf_pval) > 0) {
+    warning("Removing p-value of Inf.")
+    x <- x[-inf_pval]
+   }
   }
   return(x)
 }
