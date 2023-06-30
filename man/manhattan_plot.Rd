@@ -22,6 +22,7 @@ manhattan_plot.default(x, ...)
   pos.colname = "pos",
   label.colname = NULL,
   highlight.colname = NULL,
+  pval.log = TRUE,
   chr.order = NULL,
   signif.col = NULL,
   chr.col = NULL,
@@ -126,6 +127,9 @@ to be used for labelling.}
 (e.g. significant variants) rather than color by chromosome, you can specify the
 category in this column, and provide the color mapping in \code{highlight.col}.
 Ignored if \code{NULL}.}
+
+\item{pval.log}{a logical. If \code{FALSE}, p-values will assumed to already be log10-transformed, 
+otherwise they will be converted. Defauls it \code{TRUE}.}
 
 \item{chr.order}{a character vector. Order of chromosomes presented in manhattan plot.}
 
