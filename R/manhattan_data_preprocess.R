@@ -88,7 +88,7 @@ manhattan_data_preprocess.default <- function(x, ...) stop("Provide a valid data
 #' @importFrom ggplot2 waiver
 #' @export
 manhattan_data_preprocess.data.frame <- function(
-  x, chromosome = NULL, signif = c(5e-8, 1e-5), pval.colname = "pval",
+  x, chromosome = NULL, signif = c(5e-8, 1e-5), pval.colname = "pval", pval.log = TRUE,
   chr.colname = "chr", pos.colname = "pos", highlight.colname = NULL, chr.order = NULL,
   signif.col = NULL, chr.col = NULL, highlight.col = NULL, preserve.position = FALSE, thin = NULL,
   thin.n = 1000
@@ -104,7 +104,7 @@ manhattan_data_preprocess.data.frame <- function(
   preprocess_arg_check_out <- preprocess_arg_check(
     x = x, chromosome = chromosome, signif = signif, signif.col = signif.col,
     pval.colname = pval.colname, chr.colname = chr.colname,
-    pos.colname = pos.colname, preserve.position = preserve.position)
+    pos.colname = pos.colname, pval.log = pval.log, preserve.position = preserve.position)
 
   thin <- set_thin_logical(thin, chromosome)
 
@@ -170,7 +170,7 @@ manhattan_data_preprocess.data.frame <- function(
   x$new_pos <- new_pos + start_pos[as.character(x[[chr.colname]])]
 
   # -log10(pvalue)
-  x$log10pval <- -log10(x[[pval.colname]])
+  x$log10pval <- ifelse(pval.log, -log10(x[[pval.colname]]), x[[pval.colname]])
 
   # thin data points if it set to true
   if (thin) {
@@ -205,7 +205,7 @@ manhattan_data_preprocess.data.frame <- function(
 setMethod(
   "manhattan_data_preprocess", signature = "GRanges",
   function(
-    x, chromosome = NULL, signif = c(5e-8, 1e-5), pval.colname = "pval", highlight.colname = NULL, chr.order = NULL,
+    x, chromosome = NULL, signif = c(5e-8, 1e-5), pval.colname = "pval", pval.log = TRUE, highlight.colname = NULL, chr.order = NULL,
     signif.col = NULL, chr.col = NULL, highlight.col = NULL, preserve.position = FALSE, thin = NULL,
     thin.n = 100
   ) {
@@ -217,7 +217,7 @@ setMethod(
 
     manhattan_data_preprocess(
       grdat, chromosome = chromosome, signif = signif, pval.colname = pval.colname,
-      chr.colname = chr.colname, pos.colname = pos.colname, highlight.colname = highlight.colname, chr.order = chr.order,
+      chr.colname = chr.colname, pos.colname = pos.colname, pval.log = pval.log, highlight.colname = highlight.colname, chr.order = chr.order,
       signif.col = signif.col, chr.col = chr.col, highlight.col = highlight.col, preserve.position = preserve.position, thin = thin,
       thin.n = thin.n
     )
